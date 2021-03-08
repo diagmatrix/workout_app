@@ -1,0 +1,54 @@
+<html>
+    <head>
+        {{>header}}
+    </head>
+
+    <body>
+        <h1>List of exercises:</h1>
+        <div class="row">
+            <div class="column" style="background-color:#60ee75;">
+                <h2>Cardio</h2>
+                {{#cardio}}
+                    <div class="card">
+                        <div class="header">
+                            <h4>{{name}}</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-text">
+                                Distance: {{distance}}km
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                {{/cardio}}
+                {{^cardio}}
+                No exercises yet...
+                {{/cardio}}
+            </div>
+            <div class="column" style="background-color:#eea760;">
+                <h2>Gym</h2>
+                {{#gym}}
+                    <div class="card">
+                        <div class="header">
+                            <h4>{{name}}</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-text">
+                                Weight: {{weight}} kg
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                {{/gym}}
+                {{^gym}}
+                No exercises yet...
+                {{/gym}}
+            </div>
+        </div>
+        <form method="post">
+            <div>
+                <input type="submit" value="Add exercise" class="btn btn-primary">
+            </div>
+        </form>
+    </body>
+</html>
