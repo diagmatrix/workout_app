@@ -1,6 +1,6 @@
 const { response } = require("express");
 const workout_class = require("../models/workout_model");
-const db = new workout_class();
+const db = new workout_class("./db/gym.db","./db/cardio.db");
 
 exports.landing_page = function(req,res) {
     console.log("Landing page");
