@@ -4,51 +4,57 @@
     </head>
 
     <body>
-        <h1>List of exercises:</h1>
+        <h1>Workout Plan:</h1>
+        <p>This app has a list of exercises for your workout!</p>
         <div class="row">
             <div class="column" style="background-color:#60ee75;">
                 <h2>Cardio</h2>
                 {{#cardio}}
-                    <div class="card">
-                        <div class="header">
-                            <h4>{{name}}</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="card-text">
-                                Distance: {{distance}}km
-                            </div>
-                        </div>
-                    </div>
+                    {{>cardio_entry}}
+                    <a href="/cardio/{{_id}}">
+                        <button>Delete</button>
+                    </a>
                     <hr>
                 {{/cardio}}
                 {{^cardio}}
                 No exercises yet...
                 {{/cardio}}
+                <a href="/new/cardio">
+                    <button>Add exercise</button>
+                </a>
             </div>
             <div class="column" style="background-color:#eea760;">
-                <h2>Gym</h2>
+                <h2>Strength</h2>
                 {{#gym}}
-                    <div class="card">
-                        <div class="header">
-                            <h4>{{name}}</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="card-text">
-                                Weight: {{weight}} kg
-                            </div>
-                        </div>
-                    </div>
+                    {{>strength_entry}}
+                    <a href="/strength/{{_id}}">
+                        <button>Delete</button>
+                    </a>
                     <hr>
                 {{/gym}}
                 {{^gym}}
                 No exercises yet...
                 {{/gym}}
+                <a href="/new/strength">
+                    <button>Add exercise</button>
+                </a>
+            </div>
+            <div class="column" style="background-color:#cf57bf;">
+                <h2>Sports</h2>
+                {{#sport}}
+                    {{>sport_entry}}
+                    <a href="/sport/{{_id}}">
+                        <button>Delete</button>
+                    </a>
+                    <hr>
+                {{/sport}}
+                {{^sport}}
+                No exercises yet...
+                {{/sport}}
+                <a href="/new/sport">
+                    <button>Add exercise</button>
+                </a>
             </div>
         </div>
-        <form method="post">
-            <div>
-                <input type="submit" value="Add exercise" class="btn btn-primary">
-            </div>
-        </form>
     </body>
 </html>

@@ -4,11 +4,10 @@ const controller = require('../controllers/workout_controller');
 
 // Request handling with controller
 router.get("/",controller.landing_page)
-router.get("/exercises",controller.entries_list)
-router.get("/new",controller.new_entry)
-router.post("/",controller.go_list)
-router.post("/exercises",controller.go_new)
-router.post("/new",controller.post_new_entry)
+router.get("/new/:type",controller.new_entry)
+router.get("/:type/:id",controller.show_exercise)
+router.post("/new/:type",controller.post_new_entry)
+router.post("/:type/:id",controller.delete_exercise)
 
 // Other requests
 router.use(function(req,res) {     
