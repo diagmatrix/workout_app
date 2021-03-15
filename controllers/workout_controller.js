@@ -14,26 +14,17 @@ exports.go_list = function(req,res) {
 
 exports.entries_list = function(req,res) {
     console.log("\n--------\nExercises");
-    db.get_cardio_entries().then((list) => {
-        cardio = list;
-        console.log("Cardio promise resolved.");
-
-    }).catch((err) => {
-        console.log("Cardio promise rejected.");
-    });
-    db.get_gym_entries().then((list) => {
-        gym = list;
-        console.log("Gym promise resolved.");
-
-    }).catch((err) => {
-        console.log("Gym promise rejected.");
-    });
     
-    res.render("exercises",{
-        "title": "Workouts. List",
-        "cardio": cardio,
-        "gym": gym
-    })
+    Promise.all([db.get_cardio_entries(),db.get_gym_entries()]).then((list) => {
+        res.render("exercises",{
+            "title": "Workouts. List",
+            "cardio": list[0],
+            "gym": list[1]
+        });
+        console.log("Promise resolved.");
+    }).catch((err) => {
+        console.log("Promise rejected:",err);
+    });
 }
 
 exports.go_new = function(req,res) {
