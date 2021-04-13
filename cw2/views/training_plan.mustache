@@ -1,0 +1,170 @@
+<html>
+    <head>
+        {{>header}}
+        <style>
+            * {
+            box-sizing: border-box;
+            font-family: system-ui;
+            }
+        
+            .column {
+            float: left;
+            width: 33%;
+            }
+        
+            .row:after {
+            content: "";
+            display: table;
+            clear: both;
+            }
+            .type-container {
+                display: flex;
+                flex-flow: column wrap;
+                justify-content: space-around;
+                background: #60ee75;
+                padding: 10px;
+                margin: 0;
+            }
+            .ex-box {
+                background: #046d14;
+                color: #60ee75;
+                margin-left: 5%;
+                margin-right: 5%;
+                margin-top: 10px;
+                padding: 1em;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Workout Plan:</h1>
+        <p>This app has a list of exercises for your workout!</p>
+        <div class="row">
+            <div class="column" style="background:#60ee75;">
+                <h2 style="text-align:center;color:#046d14;">Cardio</h2>
+                <ul class="type-container">
+                    {{#cardio}}
+                    <li class="ex-box">
+                        <p style="font-weight:bold;">
+                            {{name}}
+                        </p>
+                        Distance: {{distance}} km
+                        <div style="text-align:center;margin-top:1em;">
+                            <a href="/cardio/complete/{{_id}}">
+                                <i class="fas fa-check fa-2x" style="color:#60ee75;"></i>
+                            </a>
+                            <span style="padding-left:1em">
+                                <a href="/cardio/modify/{{_id}}">
+                                    <i class="fas fa-pen fa-2x" style="color:#60ee75;"></i>
+                                </a>
+                            </span>
+                            <span style="padding-left:1em">
+                                <a href="/cardio/delete/{{_id}}">
+                                    <i class="fas fa-trash fa-2x" style="color:#60ee75;"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </li>
+                    {{/cardio}}
+                    {{^cardio}}
+                    <li class="ex-box">
+                        <p style="text-align:center;">
+                            No exercises yet...
+                          </p>
+                    </li>
+                    {{/cardio}}
+                </ul>
+                <div style="text-align:center;">
+                    <a href="/cardio/new">
+                        <i class="fas fa-plus-square fa-4x" style="color:#046d14;"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="column" style="background-color:#eea760;">
+                <h2 style="text-align:center;color:#bb4b0a;">Strength</h2>
+                <ul class="type-container" style="background:#eea760;">
+                    {{#gym}}
+                    <li class="ex-box" style="background:#bb4b0a;color:#eea760;">
+                        <p style="font-weight:bold;">
+                            {{name}}
+                        </p>
+                        <p>
+                            Weight: {{weight}} kg
+                        </p>
+                        <p>
+                            Reps: {{repetitions}}
+                        </p>
+                        <div style="text-align:center;margin-top:1em;">
+                            <a href="/strength/complete/{{_id}}">
+                                <i class="fas fa-check fa-2x" style="color:#eea760;"></i>
+                            </a>
+                            <span style="padding-left:1em">
+                                <a href="/strength/modify/{{_id}}">
+                                    <i class="fas fa-pen fa-2x" style="color:#eea760;"></i>
+                                </a>
+                            </span>
+                            <span style="padding-left:1em">
+                                <a href="/strength/delete/{{_id}}">
+                                    <i class="fas fa-trash fa-2x" style="color:#eea760;"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </li>
+                    {{/gym}}
+                    {{^gym}}
+                    <li class="ex-box" style="background:#bb4b0a;color:#eea760;">
+                        <p style="text-align:center;">
+                            No exercises yet...
+                          </p>
+                    </li>
+                    {{/gym}}
+                </ul>
+                <div style="text-align:center;">
+                    <a href="/strength/new">
+                        <i class="fas fa-plus-square fa-4x" style="color:#bb4b0a;"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="column" style="background-color:#cf57bf;">
+                <h2 style="text-align:center;color:#7a166d;">Sport</h2>
+                <ul class="type-container" style="background:#cf57bf;">
+                    {{#sport}}
+                    <li class="ex-box" style="background:#7a166d;color:#cf57bf;">
+                        <p style="font-weight:bold;">
+                            {{name}}
+                        </p>
+                        Duration: {{duration}} h
+                        <div style="text-align:center;margin-top:1em;">
+                            <a href="/sport/complete/{{_id}}">
+                                <i class="fas fa-check fa-2x" style="color:#cf57bf;"></i>
+                            </a>
+                            <span style="padding-left:1em">
+                                <a href="/sport/modify/{{_id}}">
+                                    <i class="fas fa-pen fa-2x" style="color:#cf57bf;"></i>
+                                </a>
+                            </span>
+                            <span style="padding-left:1em">
+                                <a href="/sport/delete/{{_id}}">
+                                    <i class="fas fa-trash fa-2x" style="color:#cf57bf;"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </li>
+                    {{/sport}}
+                    {{^sport}}
+                    <li class="ex-box" style="background:#7a166d;color:#cf57bf;">
+                        <p style="text-align:center;">
+                            No exercises yet...
+                          </p>
+                    </li>
+                    {{/sport}}
+                </ul>
+                <div style="text-align:center;">
+                    <a href="/sport/new">
+                        <i class="fas fa-plus-square fa-4x" style="color:#7a166d;"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
