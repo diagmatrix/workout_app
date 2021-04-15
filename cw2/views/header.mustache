@@ -1,21 +1,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{title}}</title>
+<script src="https://kit.fontawesome.com/3a6ae47346.js" crossorigin="anonymous"></script>
 <style>
     * {
-    box-sizing: border-box;
-    font-family: system-ui;
+        box-sizing: border-box;
+        font-family: system-ui;
     }
-
     .column {
-    float: left;
-    width: 33%;
-    padding: 10px;
+        float: left;
+        width: 33%;
     }
-
+    
     .row:after {
-    content: "";
-    display: table;
-    clear: both;
+        content: "";
+        display: table;
+        clear: both;
+    }
+    .type-container {
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: space-around;
+        padding: 10px;
+        margin: 0;
+    }
+    .ex-box {
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-top: 10px;
+        padding: 1em;
     }
 </style>
+<title>{{title}}</title>

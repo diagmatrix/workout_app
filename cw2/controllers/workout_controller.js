@@ -1,16 +1,16 @@
 const { response } = require("express");
-const workout_class = require("../models/workout_model");
-const db = new workout_class();
+const training_plan = require("../models/training_plan");
+const training_plan_db = new training_plan();
 
 exports.landing_page = function(req,res) {
     console.log("Landing page");
     
-    Promise.all([db.get_cardio_entries(),db.get_strength_entries(),db.get_sport_entries()]).then((list) => {
-        res.render("exercises",{
+    training_plan_db.get_list().then((list) => {
+        res.render("training_plan",{
             "title": "Training plan",
-            "cardio": list[0],
+            "cardio": list[2],
             "gym": list[1],
-            "sport": list[2]
+            "sport": list[0]
         });
         console.log("Promise resolved.",list);
     }).catch((err) => {
@@ -18,57 +18,7 @@ exports.landing_page = function(req,res) {
     });
 }
 
-exports.show_exercise = function(req,res) {
-    var type = req.params.type;
-    var id = req.params.id;
-    console.log("filtering type: ",type);
-    console.log("filtering id: ",id);
-    if (type=="cardio") {
-        db.get_cardio_entry(id).then((data) => {
-            res.render("delete", {
-                "title": "Delete exercise",
-                "cardio": data
-            });
-            console.log("Promise resolved.",data);
-        }).catch((err) => {
-            console.log("Promise rejected:",err);
-        });
-    } else if (type=="strength") {
-        db.get_strength_entry(id).then((data) => {
-            res.render("delete", {
-                "title": "Delete exercise",
-                "strength": data
-            });
-            console.log("Promise resolved.",data);
-        }).catch((err) => {
-            console.log("Promise rejected:",err);
-        });
-    } else if (type=="sport") {
-        db.get_sport_entry(id).then((data) => {
-            res.render("delete", {
-                "title": "Delete exercise",
-                "sport": data
-            });
-            console.log("Promise resolved.",data);
-        }).catch((err) => {
-            console.log("Promise rejected:",err);
-        });
-    } else {
-        console.log("Error: No exercises of type ",type);
-    }
-}
-
-exports.delete_exercise = function(req,res) {
-    var type = req.params.type;
-    var id = req.params.id;
-    console.log("filtering type: ",type);
-    console.log("filtering id: ",id);
-    
-    db.delete_exercise(type,id);
-    res.redirect("/");
-}
-
-exports.new_entry = function(req,res) {
+exports.new_exercise = function(req,res) {
     var type = req.params.type;
     console.log("New",type);
 
@@ -89,18 +39,82 @@ exports.new_entry = function(req,res) {
     }
 }
 
-exports.post_new_entry = function(req,res) {
+exports.post_new_exercise = function(req,res) {
     var type = req.params.type;
     console.log("Adding one",type);
     if (type=="cardio") {
-        db.add_cardio(req.body.name,req.body.distance);
+        training_plan_db.add_cardio(req.body.name,req.body.distance);
     } else if (type=="strength") {
-        db.add_strength(req.body.name,req.body.weight,req.body.repetitions);
+        training_plan_db.add_strength(req.body.name,req.body.weight,req.body.repetitions);
     } else if (type=="sport") {
-        db.add_sport(req.body.name,req.body.duration);
+        training_plan_db.add_sport(req.body.name,req.body.duration);
     } else {
         console.log("Error: No type ",type);
     }
 
     res.redirect("/");
+}
+
+exports.complete_exercise = function(req,res) {
+    training_plan_db.complete_exercise(req.params.type,req.params.id);
+    res.redirect("/")
+}
+
+exports.modify_exercise = function(req,res) {
+    var type = req.params.type;
+
+    training_plan_db.get_exercise(type,req.params.id).then((data) => {
+        var exercise = data[0]
+        switch(type) {
+            case "cardio":
+                res.render("modify_cardio", {
+                    "title": "Modify exercise "+ exercise.name,
+                    "name": exercise.name,
+                    "distance": exercise.distance,
+                    "id": exercise._id
+                });
+                break;
+            case "strength":
+                res.render("modify_strength", {
+                    "title": "Modify exercise "+ exercise.name,
+                    "name": exercise.name,
+                    "weight": exercise.weight,
+                    "repetitions": exercise.repetitions,
+                    "id": exercise._id
+                });
+                break;
+            case "sport":
+                res.render("modify_sport", {
+                    "title": "Modify exercise "+ exercise.name,
+                    "name": exercise.name,
+                    "duration": exercise.duration,
+                    "id": exercise._id
+                });
+                break;
+            default:
+                console.log("Error modifying exercise")
+                break;
+        }
+    })
+}
+
+exports.post_modify_exercise = function(req,res) {
+    var type = req.params.type;
+    
+    if (type=="cardio") {
+        training_plan_db.modify_cardio(req.body.id,req.body.distance);
+    } else if (type=="strength") {
+        training_plan_db.add_strength(req.body.id,[req.body.weight,req.body.repetitions]);
+    } else if (type=="sport") {
+        training_plan_db.add_sport(req.body.id,req.body.duration);
+    } else {
+        console.log("Error: No type ",type);
+    }
+
+    res.redirect("/");
+}
+
+exports.delete_exercise = function(req,res) {
+    training_plan_db.delete_exercise(req.params.type,req.params.id);
+    res.redirect("/")
 }
