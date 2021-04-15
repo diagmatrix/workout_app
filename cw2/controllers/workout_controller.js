@@ -18,7 +18,7 @@ exports.landing_page = function(req,res) {
     });
 }
 
-exports.new_entry = function(req,res) {
+exports.new_exercise = function(req,res) {
     var type = req.params.type;
     console.log("New",type);
 
@@ -39,7 +39,7 @@ exports.new_entry = function(req,res) {
     }
 }
 
-exports.post_new_entry = function(req,res) {
+exports.post_new_exercise = function(req,res) {
     var type = req.params.type;
     console.log("Adding one",type);
     if (type=="cardio") {
@@ -53,4 +53,68 @@ exports.post_new_entry = function(req,res) {
     }
 
     res.redirect("/");
+}
+
+exports.complete_exercise = function(req,res) {
+    training_plan_db.complete_exercise(req.params.type,req.params.id);
+    res.redirect("/")
+}
+
+exports.modify_exercise = function(req,res) {
+    var type = req.params.type;
+
+    training_plan_db.get_exercise(type,req.params.id).then((data) => {
+        var exercise = data[0]
+        switch(type) {
+            case "cardio":
+                res.render("modify_cardio", {
+                    "title": "Modify exercise "+ exercise.name,
+                    "name": exercise.name,
+                    "distance": exercise.distance,
+                    "id": exercise._id
+                });
+                break;
+            case "strength":
+                res.render("modify_strength", {
+                    "title": "Modify exercise "+ exercise.name,
+                    "name": exercise.name,
+                    "weight": exercise.weight,
+                    "repetitions": exercise.repetitions,
+                    "id": exercise._id
+                });
+                break;
+            case "sport":
+                res.render("modify_sport", {
+                    "title": "Modify exercise "+ exercise.name,
+                    "name": exercise.name,
+                    "duration": exercise.duration,
+                    "id": exercise._id
+                });
+                break;
+            default:
+                console.log("Error modifying exercise")
+                break;
+        }
+    })
+}
+
+exports.post_modify_exercise = function(req,res) {
+    var type = req.params.type;
+    
+    if (type=="cardio") {
+        training_plan_db.modify_cardio(req.body.id,req.body.distance);
+    } else if (type=="strength") {
+        training_plan_db.add_strength(req.body.id,[req.body.weight,req.body.repetitions]);
+    } else if (type=="sport") {
+        training_plan_db.add_sport(req.body.id,req.body.duration);
+    } else {
+        console.log("Error: No type ",type);
+    }
+
+    res.redirect("/");
+}
+
+exports.delete_exercise = function(req,res) {
+    training_plan_db.delete_exercise(req.params.type,req.params.id);
+    res.redirect("/")
 }

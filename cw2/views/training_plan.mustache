@@ -1,39 +1,6 @@
 <html>
     <head>
         {{>header}}
-        <style>
-            * {
-            box-sizing: border-box;
-            font-family: system-ui;
-            }
-        
-            .column {
-            float: left;
-            width: 33%;
-            }
-        
-            .row:after {
-            content: "";
-            display: table;
-            clear: both;
-            }
-            .type-container {
-                display: flex;
-                flex-flow: column wrap;
-                justify-content: space-around;
-                background: #60ee75;
-                padding: 10px;
-                margin: 0;
-            }
-            .ex-box {
-                background: #046d14;
-                color: #60ee75;
-                margin-left: 5%;
-                margin-right: 5%;
-                margin-top: 10px;
-                padding: 1em;
-            }
-        </style>
     </head>
 
     <body>
@@ -42,18 +9,23 @@
         <div class="row">
             <div class="column" style="background:#60ee75;">
                 <h2 style="text-align:center;color:#046d14;">Cardio</h2>
-                <ul class="type-container">
+                <ul class="type-container" style="background: #60ee75;">
                     {{#cardio}}
-                    <li class="ex-box">
+                    <li class="ex-box" style="background: #046d14;color: #60ee75;">
                         <p style="font-weight:bold;">
                             {{name}}
+                            {{#completed}}
+                            <i class="far fa-check-circle"></i>
+                            {{/completed}}
                         </p>
                         Distance: {{distance}} km
                         <div style="text-align:center;margin-top:1em;">
+                            {{^completed}}
                             <a href="/cardio/complete/{{_id}}">
                                 <i class="fas fa-check fa-2x" style="color:#60ee75;"></i>
                             </a>
                             <span style="padding-left:1em">
+                            {{/completed}}
                                 <a href="/cardio/modify/{{_id}}">
                                     <i class="fas fa-pen fa-2x" style="color:#60ee75;"></i>
                                 </a>
@@ -67,7 +39,7 @@
                     </li>
                     {{/cardio}}
                     {{^cardio}}
-                    <li class="ex-box">
+                    <li class="ex-box" style="background: #046d14;color: #60ee75;">
                         <p style="text-align:center;">
                             No exercises yet...
                           </p>
@@ -87,6 +59,9 @@
                     <li class="ex-box" style="background:#bb4b0a;color:#eea760;">
                         <p style="font-weight:bold;">
                             {{name}}
+                            {{#completed}}
+                            <i class="far fa-check-circle"></i>
+                            {{/completed}}
                         </p>
                         <p>
                             Weight: {{weight}} kg
@@ -95,9 +70,11 @@
                             Reps: {{repetitions}}
                         </p>
                         <div style="text-align:center;margin-top:1em;">
+                            {{^completed}}
                             <a href="/strength/complete/{{_id}}">
                                 <i class="fas fa-check fa-2x" style="color:#eea760;"></i>
                             </a>
+                            {{/completed}}
                             <span style="padding-left:1em">
                                 <a href="/strength/modify/{{_id}}">
                                     <i class="fas fa-pen fa-2x" style="color:#eea760;"></i>
@@ -132,12 +109,17 @@
                     <li class="ex-box" style="background:#7a166d;color:#cf57bf;">
                         <p style="font-weight:bold;">
                             {{name}}
+                            {{#completed}}
+                            <i class="far fa-check-circle"></i>
+                            {{/completed}}
                         </p>
                         Duration: {{duration}} h
                         <div style="text-align:center;margin-top:1em;">
+                            {{^completed}}
                             <a href="/sport/complete/{{_id}}">
                                 <i class="fas fa-check fa-2x" style="color:#cf57bf;"></i>
                             </a>
+                            {{/completed}}
                             <span style="padding-left:1em">
                                 <a href="/sport/modify/{{_id}}">
                                     <i class="fas fa-pen fa-2x" style="color:#cf57bf;"></i>
