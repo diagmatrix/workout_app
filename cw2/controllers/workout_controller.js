@@ -1,8 +1,43 @@
 const { response } = require("express");
 const training_plan = require("../models/training_plan");
+const manager = require("../models/manager");
 const training_plan_db = new training_plan();
 
 exports.landing_page = function(req,res) {
+    res.render("landing_page", {
+        "title": "Workout app"
+    })
+}
+
+exports.register = function(req,res) {
+    res.render("user/register");
+}
+
+exports.post_register = function(req,res) {
+    const user = req.body.username;
+    const pass = req.body.password;
+
+    console.log("register user with name: ", user, " and password: ",  pass);
+    if (!user || !pass) {
+        console.log("Error: no user or no password");
+        res.send(401, 'no user or no password'); 
+        return;     
+    }
+    manager.check_user(user,function(err,name) {
+        if (name) {
+            console.log("Error: User exists");
+            res.send(401, "User exists:", user);
+            return; 
+        } else {
+            console.log("Creating user");
+            manager.add_user(user,pass);
+            res.redirect("/plan");
+        }
+    })
+}
+
+// Training plan control
+exports.show_plan = function(req,res) {
     console.log("Landing page");
     
     training_plan_db.get_list().then((list) => {
@@ -17,7 +52,6 @@ exports.landing_page = function(req,res) {
         console.log("Promise rejected:",err);
     });
 }
-
 exports.new_exercise = function(req,res) {
     var type = req.params.type;
     console.log("New",type);
@@ -38,7 +72,6 @@ exports.new_exercise = function(req,res) {
         console.log("Error: No type ",type);
     }
 }
-
 exports.post_new_exercise = function(req,res) {
     var type = req.params.type;
     console.log("Adding one",type);
@@ -52,14 +85,12 @@ exports.post_new_exercise = function(req,res) {
         console.log("Error: No type ",type);
     }
 
-    res.redirect("/");
+    res.redirect("/plan");
 }
-
 exports.complete_exercise = function(req,res) {
     training_plan_db.complete_exercise(req.params.type,req.params.id);
-    res.redirect("/")
+    res.redirect("/plan")
 }
-
 exports.modify_exercise = function(req,res) {
     var type = req.params.type;
 
@@ -97,7 +128,6 @@ exports.modify_exercise = function(req,res) {
         }
     })
 }
-
 exports.post_modify_exercise = function(req,res) {
     var type = req.params.type;
     console.log("Modifying exercise: ",req.body.id);
@@ -111,10 +141,9 @@ exports.post_modify_exercise = function(req,res) {
         console.log("Error: No type ",type);
     }
 
-    res.redirect("/");
+    res.redirect("/plan");
 }
-
 exports.delete_exercise = function(req,res) {
     training_plan_db.delete_exercise(req.params.type,req.params.id);
-    res.redirect("/")
+    res.redirect("/plan")
 }
