@@ -109,7 +109,6 @@ class training_plan {
     // Deletes an exercise
     delete_exercise(type,id) {
         var db;
-        var total_num = this.num;
         switch(type) {
             case "sport":
                 db = this.db_sport;
@@ -129,11 +128,11 @@ class training_plan {
                 console.log("Error removing the exercise ",id);
                 return false;
             } else {
-                total_num = total_num - 1;
                 console.log("Removed exercise ",id);
                 return true;
             }
         });
+        this.num = this.num - 1;
     }
     // Gets one exercise
     // NOT IN DESIGN
