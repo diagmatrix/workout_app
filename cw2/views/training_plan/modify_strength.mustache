@@ -1,0 +1,41 @@
+<html lang="eng">
+<head>
+    {{>header}}
+    <style>
+        input[type = submit] {
+           background-color: #bb4b0a;
+           border: none;
+           text-decoration: none;
+           color: #eea760;
+           padding: 20px 20px;
+           margin: 20px 20px;
+           cursor: pointer;
+        }
+     </style>
+</head>
+
+<body class="container" style="background-color:#eea760;">
+<h2 style="color:#bb4b0a;">Modify the exercise {{name}}</h2>
+<ul class="type-container" style="background:#eea760;">
+    <form method="post" role="form">
+        <li class="ex-box" style="background:#bb4b0a;color: #eea760;">
+            <p>Previous series: {{weight}} kg - {{repetitions}} times</p>
+            <div class="form-group">
+                <label for="distance">Weight</label>
+                <input type="number" class="form-control" id="weight" name="weight" required>
+            </div>
+            <div class="form-group">
+                <label for="distance">Repetitions</label>
+                <input type="number" class="form-control" id="repetitions" name="repetitions" required>
+            </div>
+        </li>
+        <div class="form-group">
+            <input type="hidden" class="form-control" id="id" name="id" value={{id}}>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Post entry" class="btn btn-primary">
+        </div>
+    </form>
+</ul>
+</body>
+</html>

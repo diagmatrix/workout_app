@@ -2,11 +2,15 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/workout_controller');
 
-// ------------------------------------------------------------
 // Request handling with controller
 router.get("/",controller.landing_page)
+router.get("/register",controller.register)
+router.post("/register",controller.post_register)
 
+// ------------------------------------------------------------
+// TRAINING PLAN HANDLING
 // New exercises
+router.get("/plan",controller.show_plan)
 router.get("/:type/new",controller.new_exercise)
 router.post("/:type/new",controller.post_new_exercise)
 
