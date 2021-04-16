@@ -6,7 +6,7 @@ exports.landing_page = function(req,res) {
     console.log("Landing page");
     
     training_plan_db.get_list().then((list) => {
-        res.render("training_plan",{
+        res.render("training_plan/training_plan",{
             "title": "Training plan",
             "cardio": list[2],
             "gym": list[1],
@@ -23,15 +23,15 @@ exports.new_exercise = function(req,res) {
     console.log("New",type);
 
     if (type=="cardio") {
-        res.render("new_cardio", {
+        res.render("training_plan/new_cardio", {
             "title": "Add exercise"
         });
     } else if (type=="strength") {
-        res.render("new_strength", {
+        res.render("training_plan/new_strength", {
             "title": "Add exercise"
         });
     } else if (type=="sport") {
-        res.render("new_sport", {
+        res.render("training_plan/new_sport", {
             "title": "Add exercise"
         });
     } else {
@@ -67,7 +67,7 @@ exports.modify_exercise = function(req,res) {
         var exercise = data[0]
         switch(type) {
             case "cardio":
-                res.render("modify_cardio", {
+                res.render("training_plan/modify_cardio", {
                     "title": "Modify exercise "+ exercise.name,
                     "name": exercise.name,
                     "distance": exercise.distance,
@@ -75,7 +75,7 @@ exports.modify_exercise = function(req,res) {
                 });
                 break;
             case "strength":
-                res.render("modify_strength", {
+                res.render("training_plan/modify_strength", {
                     "title": "Modify exercise "+ exercise.name,
                     "name": exercise.name,
                     "weight": exercise.weight,
@@ -84,7 +84,7 @@ exports.modify_exercise = function(req,res) {
                 });
                 break;
             case "sport":
-                res.render("modify_sport", {
+                res.render("training_plan/modify_sport", {
                     "title": "Modify exercise "+ exercise.name,
                     "name": exercise.name,
                     "duration": exercise.duration,
@@ -100,13 +100,13 @@ exports.modify_exercise = function(req,res) {
 
 exports.post_modify_exercise = function(req,res) {
     var type = req.params.type;
-    
+    console.log("Modifying exercise: ",req.body.id);
     if (type=="cardio") {
         training_plan_db.modify_cardio(req.body.id,req.body.distance);
     } else if (type=="strength") {
-        training_plan_db.add_strength(req.body.id,[req.body.weight,req.body.repetitions]);
+        training_plan_db.modify_strength(req.body.id,[req.body.weight,req.body.repetitions]);
     } else if (type=="sport") {
-        training_plan_db.add_sport(req.body.id,req.body.duration);
+        training_plan_db.modify_sport(req.body.id,req.body.duration);
     } else {
         console.log("Error: No type ",type);
     }
