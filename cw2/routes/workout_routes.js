@@ -1,11 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/workout_controller');
+const auth = require("../auth/auth");
+const {ensureLoggedIn} = require("connect-ensure-login");
+const controller = require("../controllers/app_controller");
 
-// Request handling with controller
+// ------------------------------------------------------------
+// LANDING PAGE
 router.get("/",controller.landing_page)
+
+// ------------------------------------------------------------
+// USER HANDLING
+// Register user
 router.get("/register",controller.register)
 router.post("/register",controller.post_register)
+// Login user
+router.get("/login",controller.login)
+router.post("/login",auth.authorize("/login"),controller.post_login)
 
 // ------------------------------------------------------------
 // TRAINING PLAN HANDLING

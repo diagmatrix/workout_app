@@ -59,7 +59,7 @@ class manager {
         var added_plan = plan;
         added_plan["username"] = user;
         this.#plans.insert(added_plan,function(err) {
-            if(err) {
+            if (err) {
                 console.log("Cannot insert plan");
                 return false;
             } else {
@@ -67,6 +67,15 @@ class manager {
                 return true;
             }
         });
+    }
+
+    // Deletes all users (for testing purposes only)
+    static delete_all() {
+        this.#users.remove({},{},function(err,num) {
+            if (!err) {
+                console.log("Deleted",num,"users");
+            }
+        })
     }
 }
 
