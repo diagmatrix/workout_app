@@ -6,8 +6,8 @@ const salt_rounds = 10
 
 // Manager class
 class manager {
-    static #users = new nedb({filename: "./db/users",autoload: true});
-    static #plans = new nedb({filename: "./db/shared_plans",autoload: true});
+    static #users = new nedb({filename: "./db/users.db",autoload: true});
+    static #plans = new nedb({filename: "./db/shared_plans.db",autoload: true});
 
     // Create a new user
     static add_user(username,password) {

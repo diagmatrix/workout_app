@@ -26,13 +26,12 @@
     </head> 
     <body class="container"> 
         <h2>New User Registration</h2> 
-        {{#user-name-error}}
-            <div class="container" 
-            style="background: #a30000;color:#ffffff;text-align:center;padding:2px;width:40%;margin: top 4px; bottom: 4px;;">
+        <form method="post" role="/register" style="margin:0 auto;width:500px;">
+            {{#user-name-error}}
+            <div class="form-group" style="background: #a30000;color:#ffffff;text-align:center;padding:2px;width:40%;margin: top 4px; bottom: 4px;;">
                 Username already taken
             </div>
-        {{/user-name-error}}
-        <form method="post" role="/register" style="margin:0 auto;width:500px;">
+            {{/user-name-error}}
             <div class="form-group">
                 <label for="username">Username: </label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter user name" required>
