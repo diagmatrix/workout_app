@@ -30,6 +30,27 @@ class training_plan {
         }
         this.num = 0;
     }
+    // Creates a plan from a list
+    create_from_list(cardio,strength,sport) {
+        // Adding all cardio entries
+        this.db_cardio.insert(cardio,function(err,docs) {
+            docs.forEach(function(d) {
+                console.log("Added to cardio db:",d);
+            });
+        });
+        // Adding all strength entries
+        this.db_strength.insert(strength,function(err,docs) {
+            docs.forEach(function(d) {
+                console.log("Added to strength db:",d);
+            });
+        });
+        // Adding all sport entries
+        this.db_cardio.insert(sport,function(err,docs) {
+            docs.forEach(function(d) {
+                console.log("Added to sport db:",d);
+            });
+        });
+    }
     // Adds one sport entry
     add_sport(name,dur) {
         var entry = {
