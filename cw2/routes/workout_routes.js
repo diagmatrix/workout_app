@@ -1,25 +1,43 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controllers/workout_controller');
+const auth = require("../auth/auth");
+const {ensureLoggedIn} = require("connect-ensure-login");
+const controller = require("../controllers/app_controller");
 
-// Request handling with controller
+// ------------------------------------------------------------
+// LANDING PAGE
 router.get("/",controller.landing_page)
+
+// ------------------------------------------------------------
+// USER HANDLING
+// Register user
 router.get("/register",controller.register)
 router.post("/register",controller.post_register)
+// Login user
+router.get("/login",controller.login)
+router.post("/login",auth.authorize("/login"),controller.post_login)
+// Logout
+router.get("/logout",controller.logout)
+// Main user page
+router.get("/:profile",ensureLoggedIn("/login"),controller.userpage)
+
+// ------------------------------------------------------------
+// PLAN SHARING
+router.get("/:profile/shared/:id",controller.shared_plan)
 
 // ------------------------------------------------------------
 // TRAINING PLAN HANDLING
 // New exercises
-router.get("/plan",controller.show_plan)
-router.get("/:type/new",controller.new_exercise)
-router.post("/:type/new",controller.post_new_exercise)
+router.get("/:profile/plan",ensureLoggedIn("/login"),controller.show_plan)
+router.get("/:type/new",ensureLoggedIn("/login"),controller.new_exercise)
+router.post("/:type/new",ensureLoggedIn("/login"),controller.post_new_exercise)
 
 // Complete exercises
-router.get("/:type/complete/:id",controller.complete_exercise)
+router.get("/:type/complete/:id",ensureLoggedIn("/login"),controller.complete_exercise)
 
 // Modify exercises
-router.get("/:type/modify/:id",controller.modify_exercise)
-router.post("/:type/modify/:id",controller.post_modify_exercise)
+router.get("/:type/modify/:id",ensureLoggedIn("/login"),controller.modify_exercise)
+router.post("/:type/modify/:id",ensureLoggedIn("/login"),controller.post_modify_exercise)
 
 // Delete exercises
 router.get("/:type/delete/:id",controller.delete_exercise)

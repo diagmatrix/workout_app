@@ -6,8 +6,8 @@ const salt_rounds = 10
 
 // Manager class
 class manager {
-    static #users = new nedb({filename: "./db/users",autoload: true});
-    static #plans = new nedb({filename: "./db/shared_plans",autoload: true});
+    static #users = new nedb({filename: "./db/users.db",autoload: true});
+    static #plans = new nedb({filename: "./db/shared_plans.db",autoload: true});
 
     // Create a new user
     static add_user(username,password) {
@@ -59,7 +59,7 @@ class manager {
         var added_plan = plan;
         added_plan["username"] = user;
         this.#plans.insert(added_plan,function(err) {
-            if(err) {
+            if (err) {
                 console.log("Cannot insert plan");
                 return false;
             } else {
@@ -67,6 +67,15 @@ class manager {
                 return true;
             }
         });
+    }
+
+    // Deletes all users (for testing purposes only)
+    static delete_all() {
+        this.#users.remove({},{},function(err,num) {
+            if (!err) {
+                console.log("Deleted",num,"users");
+            }
+        })
     }
 }
 

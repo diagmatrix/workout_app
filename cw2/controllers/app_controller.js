@@ -1,18 +1,23 @@
 const { response } = require("express");
 const training_plan = require("../models/training_plan");
-const manager = require("../models/manager");
 const training_plan_db = new training_plan();
+const manager = require("../models/manager");
 
+// ------------------------------------------------------------
+// LANDING PAGE
 exports.landing_page = function(req,res) {
     res.render("landing_page", {
         "title": "Workout app"
     })
 }
 
+// ------------------------------------------------------------
+// USER FUNCTIONS
 exports.register = function(req,res) {
+    // For testing purposes MUST DELETE LATER
+    // manager.delete_all();
     res.render("user/register");
 }
-
 exports.post_register = function(req,res) {
     const user = req.body.username;
     const pass = req.body.password;
@@ -21,24 +26,61 @@ exports.post_register = function(req,res) {
     if (!user || !pass) {
         console.log("Error: no user or no password");
         res.send(401, 'no user or no password'); 
-        return;     
+        return;
     }
     manager.check_user(user,function(err,name) {
         if (name) {
             console.log("Error: User exists");
-            res.send(401, "User exists:", user);
-            return; 
+            res.render("user/register", { "user-name-error": true});
         } else {
             console.log("Creating user");
             manager.add_user(user,pass);
-            res.redirect("/plan");
+            res.redirect("/");
         }
     })
 }
+exports.login = function(req,res) {
+    res.render("user/login",{"title": "Login"});
+}
+exports.post_login = function(req,res) {
+    console.log("User ",req.user.username,"logged in");
+    var redirect_url = "/" + req.user.username;
+    res.redirect(redirect_url);
+}
+exports.userpage = function(req,res) {
+    console.log("Profile page of",req.params.profile);
+    // URL creation depending of the user logged in
+    var calendar = "/" + req.user.username + "/calendar";
+    var records = "/" + req.user.username + "/records";
+    var stats = "/" + req.user.username + "/stats";
+    // For testing purposes MUST REMOVE LATER
+    var plan_url = "/" + req.params.profile + "/plan";
 
-// Training plan control
+    res.render("calendar/profile",{
+        "title": req.params.profile,
+        "calendar": calendar,
+        "records": records,
+        "stats": stats,
+        "url": plan_url
+    });
+}
+exports.logout = function(req, res) {
+    console.log("Logging out...");
+    req.logout();
+    res.redirect("/");
+};
+
+// ------------------------------------------------------------
+// SHARING PLAN FUNCTIONS
+// TODO
+exports.shared_plan = function(req,res) {
+    console.log("Shared plan id:",req.params.id," of user:",req.params.profile);
+}
+
+// ------------------------------------------------------------
+// TRAINING PLAN FUNCTIONS
 exports.show_plan = function(req,res) {
-    console.log("Landing page");
+    console.log(req.user.username);
     
     training_plan_db.get_list().then((list) => {
         res.render("training_plan/training_plan",{
@@ -84,12 +126,13 @@ exports.post_new_exercise = function(req,res) {
     } else {
         console.log("Error: No type ",type);
     }
-
-    res.redirect("/plan");
+    var redirect_url = "/" + req.user.username + "/plan";
+    res.redirect(redirect_url);
 }
 exports.complete_exercise = function(req,res) {
     training_plan_db.complete_exercise(req.params.type,req.params.id);
-    res.redirect("/plan")
+    var redirect_url = "/" + req.user.username + "/plan";
+    res.redirect(redirect_url);
 }
 exports.modify_exercise = function(req,res) {
     var type = req.params.type;
@@ -141,9 +184,11 @@ exports.post_modify_exercise = function(req,res) {
         console.log("Error: No type ",type);
     }
 
-    res.redirect("/plan");
+    var redirect_url = "/" + req.user.username + "/plan";
+    res.redirect(redirect_url);
 }
 exports.delete_exercise = function(req,res) {
     training_plan_db.delete_exercise(req.params.type,req.params.id);
-    res.redirect("/plan")
+    var redirect_url = "/" + req.user.username + "/plan";
+    res.redirect(redirect_url);
 }
