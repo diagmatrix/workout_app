@@ -40,22 +40,24 @@
     <h1 style="text-align:center;">{{title}}</h1>
     <section class="buttons-container">
         <li class="button-box">
-            <a href={{calendar}} class="button">Calendar</a>
+            <a href="/{{name}}/calendar" class="button">Calendar</a>
         </li>
         <li class="button-box">
-            <a href={{records}} class="button">Records</a>
+            <a href="/{{name}}/records" class="button">Records</a>
         </li>
         <li class="button-box">
-            <a href={{stats}} class="button">Stats</a>
+            <a href="/{{name}}/stats" class="button">Stats</a>
         </li>
         <li class="button-box">
             <a href="/logout" class="button">Logout</a>
         </li>
     </section>
-    <div class="text-right" style="margin-bottom:1em;">
-        <a id="logout" href={{url}} class="btn btn-primary">
-            Go to plan
-        </a>
-    </div>
+    <h2 style="text-align:center;">Current week's plan: {{week}}</h2>
+    {{#exist}}
+        {{>week_plan}}
+    {{/exist}}
+    {{^exist}}
+    <p style="text-align: center;">No plan for current week...</p>
+    {{/exist}}
 </body>
 </html>

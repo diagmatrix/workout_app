@@ -1,7 +1,11 @@
 const { response } = require("express");
 const training_plan = require("../models/training_plan");
-const training_plan_db = new training_plan();
 const manager = require("../models/manager");
+const user_calendar = require("../models/user_calendar");
+const { this_monday } = require("../models/date_management");
+
+var calendarDB = new user_calendar("Testuser");
+const training_plan_db = new training_plan();
 
 // ------------------------------------------------------------
 // LANDING PAGE
@@ -44,24 +48,40 @@ exports.login = function(req,res) {
 }
 exports.post_login = function(req,res) {
     console.log("User ",req.user.username,"logged in");
+    calendarDB = new user_calendar(req.user.username);
     var redirect_url = "/" + req.user.username;
     res.redirect(redirect_url);
 }
 exports.userpage = function(req,res) {
     console.log("Profile page of",req.params.profile);
     // URL creation depending of the user logged in
-    var calendar = "/" + req.user.username + "/calendar";
-    var records = "/" + req.user.username + "/records";
-    var stats = "/" + req.user.username + "/stats";
-    // For testing purposes MUST REMOVE LATER
-    var plan_url = "/" + req.params.profile + "/plan";
-
-    res.render("calendar/profile",{
-        "title": req.params.profile,
-        "calendar": calendar,
-        "records": records,
-        "stats": stats,
-        "url": plan_url
+    var week = this_monday();
+    console.log("This week is:",week);
+    calendarDB.get_week(week).then((list) => {
+        var plan = (list[0].length+list[1].length+list[2].length)>=3;
+        if (plan) {
+            // If there is a plan
+            res.render("profile",{
+                "title": req.params.profile,
+                "cardio": list[2],
+                "gym": list[1],
+                "sport": list[0],
+                "week": week,
+                "name": req.params.profile,
+                "exist": true
+            });
+        } else {
+            // If there is no plan
+            res.render("profile",{
+                "title": req.params.profile,
+                "week": week,
+                "name": req.params.profile,
+                "exist": false
+            });
+        }
+        console.log("Promise resolved");
+    }).catch((err) => {
+        console.log("Promise rejected");
     });
 }
 exports.logout = function(req, res) {
