@@ -2,10 +2,11 @@ const { response } = require("express");
 const training_plan = require("../models/training_plan");
 const manager = require("../models/manager");
 const user_calendar = require("../models/user_calendar");
-const { this_monday } = require("../models/date_management");
+const { this_monday, change_week } = require("../models/date_management");
 
 var calendarDB = new user_calendar("Testuser");
 const training_plan_db = new training_plan();
+var week = this_monday();
 
 // ------------------------------------------------------------
 // LANDING PAGE
@@ -55,7 +56,7 @@ exports.post_login = function(req,res) {
 exports.userpage = function(req,res) {
     console.log("Profile page of",req.params.profile);
     // URL creation depending of the user logged in
-    var week = this_monday();
+    week = this_monday();
     console.log("This week is:",week);
     calendarDB.get_week(week).then((list) => {
         var plan = (list[0].length+list[1].length+list[2].length)>=3;
@@ -95,6 +96,44 @@ exports.logout = function(req, res) {
 // TODO
 exports.shared_plan = function(req,res) {
     console.log("Shared plan id:",req.params.id," of user:",req.params.profile);
+}
+
+// ------------------------------------------------------------
+// CALENDAR FUNCTIONS
+exports.calendar = function(req,res) {
+    calendarDB.get_week(week).then((list) => {
+        var plan = (list[0].length+list[1].length+list[2].length)>=3;
+        if (plan) {
+            // If there is a plan
+            res.render("calendar",{
+                "title": "Calendar",
+                "cardio": list[2],
+                "gym": list[1],
+                "sport": list[0],
+                "week": week,
+                "name": req.params.profile,
+                "exist": true
+            });
+        } else {
+            // If there is no plan
+            res.render("calendar",{
+                "title": "Calendar",
+                "week": week,
+                "name": req.params.profile,
+                "exist": false
+            });
+        }
+        console.log("Promise resolved");
+    }).catch((err) => {
+        console.log("Promise rejected");
+    });
+}
+exports.new_calendar_week = function(req,res) {
+    console.log("Action:",req.body.week_change);
+    week = change_week(week,req.body.week_change);
+    console.log("New week:",week);
+    var redirect_url = "/" + req.user.username + "/calendar";
+    res.redirect(redirect_url);
 }
 
 // ------------------------------------------------------------

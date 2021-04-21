@@ -26,6 +26,11 @@ router.get("/:profile",ensureLoggedIn("/login"),controller.userpage)
 router.get("/:profile/shared/:id",controller.shared_plan)
 
 // ------------------------------------------------------------
+// CALENDAR PAGE
+router.get("/:profile/calendar",ensureLoggedIn("/login"),controller.calendar)
+router.post("/:profile/calendar",ensureLoggedIn("/login"),controller.new_calendar_week)
+
+// ------------------------------------------------------------
 // TRAINING PLAN HANDLING
 // New exercises
 router.get("/:profile/plan",ensureLoggedIn("/login"),controller.show_plan)
