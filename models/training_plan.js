@@ -12,31 +12,20 @@ class training_plan {
         // Sports collection init
         this.db_sport = new nedb();
         this.num = 0;
-        console.log("New training plan object created");
+        console.log("New void training plan object created");
     }
     // Creates a plan from a list
     create_from_list(cardio,strength,sport) {
         this.clear();
         // Adding all cardio entries
-        this.db_cardio.insert(cardio,function(err,docs) {
-            docs.forEach(function(d) {
-                console.log("Added to cardio db:",d);
-            });
-        });
+        this.db_cardio.insert(cardio);
         // Adding all strength entries
-        this.db_strength.insert(strength,function(err,docs) {
-            docs.forEach(function(d) {
-                console.log("Added to strength db:",d);
-            });
-        });
+        this.db_strength.insert(strength);
         // Adding all sport entries
-        this.db_cardio.insert(sport,function(err,docs) {
-            docs.forEach(function(d) {
-                console.log("Added to sport db:",d);
-            });
-        });
+        this.db_sport.insert(sport);
+
         this.num += cardio.length + strength.length + sport.length;
-        console.log("New training plan object created with "+this.num+" exercises");
+        console.log("New training plan created with "+this.num+" exercises");
     }
     // Adds one sport entry
     add_sport(name,dur) {
@@ -47,9 +36,7 @@ class training_plan {
         }
         this.db_sport.insert(entry,function(err,doc) {
             if (err) {
-                console.log("Error inserting document",name);
-            } else {
-                console.log("Document inserted in db",entry);
+                console.log("ERROR: Could not insert document");
             }
         });
         this.num = this.num + 1;
@@ -64,9 +51,7 @@ class training_plan {
         }
         this.db_strength.insert(entry,function(err,doc) {
             if (err) {
-                console.log("Error inserting document",name);
-            } else {
-                console.log("Document inserted in db",entry);
+                console.log("ERROR: Could not insert document");
             }
         });
         this.num = this.num + 1;
@@ -80,9 +65,7 @@ class training_plan {
         }
         this.db_cardio.insert(entry,function(err,doc) {
             if (err) {
-                console.log("Error inserting document",name);
-            } else {
-                console.log("Document inserted in db",entry);
+                console.log("ERROR: Could not insert document");
             }
         });
         this.num = this.num + 1;
@@ -106,10 +89,9 @@ class training_plan {
 
         db.update({_id: id},{$set: {completed: true}},{},function(err,num) {
             if (err) {
-                console.log("Error completing the exercise ",id);
+                console.log("ERROR: Could not complete exercise");
                 return false;
             } else {
-                console.log("Completed exercise ",id);
                 return true;
             }
         });
@@ -133,10 +115,9 @@ class training_plan {
 
         db.remove({_id: id},function(err,num) {
             if (err) {
-                console.log("Error removing the exercise ",id);
+                console.log("ERROR: Could not remove exercise");
                 return false;
             } else {
-                console.log("Removed exercise ",id);
                 return true;
             }
         });
@@ -180,7 +161,7 @@ class training_plan {
                     reject(err);
                 } else {
                     resolve(entries);
-                    console.log("'sport_entries' returns:",entries);
+                    console.log("'sport_entries' returns",entries.length,"entries");
                 }
             })
         });
@@ -191,7 +172,7 @@ class training_plan {
                     reject(err);
                 } else {
                     resolve(entries);
-                    console.log("'strength_entries' returns:",entries);
+                    console.log("'strength_entries' returns",entries.length,"entries");
                 }
             })
         });
@@ -202,13 +183,13 @@ class training_plan {
                     reject(err);
                 } else {
                     resolve(entries);
-                    console.log("'cardio_entries' returns:",entries);
+                    console.log("'cardio_entries' returns",entries.length,"entries");
                 }
             })
         });
         
-        console.log("Number of exercises: ",this.num);
-        return Promise.all([sport_entries,strength_entries,cardio_entries]);
+        console.log("Number of exercises:",this.num);
+        return Promise.all([cardio_entries,strength_entries,sport_entries,]);
     }
     // Gets the total number of exercises
     get_num() { return this.num; }
@@ -219,10 +200,9 @@ class training_plan {
             completed: false
         }},{},function(err,num) {
             if (err) {
-                console.log("Error modifying the sport exercise ",id);
+                console.log("ERROR: Could not modify exercise");
                 return false;
             } else {
-                console.log("Modified sport exercise ",id);
                 return true;
             }
         });
@@ -235,10 +215,9 @@ class training_plan {
             completed: false
         }},{},function(err,num) {
             if (err) {
-                console.log("Error modifying the strength exercise ",id);
+                console.log("ERROR: Could not modify exercise");
                 return false;
             } else {
-                console.log("Modified strength exercise ",id);
                 return true;
             }
         });
@@ -250,10 +229,9 @@ class training_plan {
             completed: false
         }},{},function(err,num) {
             if (err) {
-                console.log("Error modifying the cardio exercise ",id);
+                console.log("ERROR: Could not modify exercise");
                 return false;
             } else {
-                console.log("Modified cardio exercise ",id);
                 return true;
             }
         });
@@ -268,22 +246,16 @@ class training_plan {
         this.db_cardio.remove({},(err,num) => {
             if (err) {
                 console.log("Error clearing cardio DB");
-            } else {
-                console.log("Removed "+num+" entries form cardio DB");
             }
         });
         this.db_strength.remove({},(err,num) => {
             if (err) {
                 console.log("Error clearing strength DB");
-            } else {
-                console.log("Removed "+num+" entries form strength DB");
             }
         });
         this.db_sport.remove({},(err,num) => {
             if (err) {
                 console.log("Error clearing sport DB");
-            } else {
-                console.log("Removed "+num+" entries form sport DB");
             }
         });
         this.num = 0;

@@ -16,7 +16,7 @@ class manager {
                 username: username,
                 password: hash
             };
-            console.log("New user: ",new_user);
+            console.log("New user:",new_user.username);
             this.#users.insert(new_user,function(err) {
                 if(err) {
                     console.log("Cannot insert user");
@@ -30,13 +30,13 @@ class manager {
     // Check if a user exists
     // DIFFERENT FROM DESIGN
     static check_user(username, cb) {
-        console.log("Looking up user: ",username);
+        console.log("Looking up user");
         this.#users.findOne({username: username},function(err,entry) {
             if (err || !entry) {
                 console.log("Error or no user found");
                 return cb(null, null);
             } else {
-                console.log("User is: ",entry);
+                console.log("User found");
                 return cb(null,entry);
             }
         });
@@ -49,7 +49,7 @@ class manager {
                     reject(err);
                 } else {
                     resolve(entry);
-                    console.log("Plan ",id," found!");
+                    console.log("Plan",id,"found!");
                 }
             })
         })
@@ -63,7 +63,7 @@ class manager {
                 console.log("Cannot insert plan");
                 return false;
             } else {
-                console.log("Added plan: ",added_plan);
+                console.log("Added plan");
                 return true;
             }
         });

@@ -12,37 +12,23 @@ class user_calendar {
     }
     // Add a week
     add_week(date,plan) {
-        if (plan) {
-            plan.get_list().then((data) =>{
-                data.forEach(type => {
-                    type.forEach(exercise => {
-                        delete exercise["_id"]
-                    })
-                    console.log(type);
-                });
-                var entry = {
-                    _id: date,
-                    plan: JSON.stringify(data)
-                };
-                this.db.insert(entry,function(err,doc) {
-                    if (err) {
-                        console.log("ERROR: Could not insert week plan");
-                    } else {
-                        console.log("Plan inserted in db.");
-                    }
-                });
+        plan.get_list().then((data) =>{
+            data.forEach(type => {
+                type.forEach(exercise => {
+                    delete exercise["_id"];
+                    exercise = JSON.stringify(exercise);
+                })
+                type = JSON.stringify(type);
             });
-        } else {
             this.db.insert({
                 _id: date,
-                plan: [[],[],[]]},function(err,doc) {
+                plan: data
+            },function(err,doc) {
                 if (err) {
                     console.log("ERROR: Could not insert week plan");
-                } else {
-                    console.log("Plan inserted in db");
                 }
             });
-        }
+        });
     }
     // Getting a week
     get_week(date) {
@@ -52,13 +38,11 @@ class user_calendar {
                 if (err) {
                     console.log("ERROR: Error searching for plan");
                     reject(err);
-                } else if (!doc) {
+                } else if (doc.length==0) {
                     console.log("WARNING: Void plan.");
-                    that.add_week(date,null);
-                    resolve(null);
+                    reject(null);
                 } else {
-                    console.log(doc.plan);
-                    resolve(doc.plan);
+                    resolve(doc);
                 }
             });
         });        

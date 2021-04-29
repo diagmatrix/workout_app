@@ -60,34 +60,32 @@ exports.userpage = function(req,res) {
     week = this_monday();
     page_url = req.url;
     calendarDB.get_week(week).then((plan) => {
-        if (!plan) { // If there is no plan
-            console.log("No plan for week...");
+        // If there is a plan
+        current_plan.create_from_list(plan[0].plan[0],plan[0].plan[1],plan[0].plan[2]);
+        current_plan.get_list().then((list) => {        
+            res.render("profile",{
+                "title": req.params.profile,
+                "cardio": list[0],
+                "gym": list[1],
+                "sport": list[2],
+                "week": week,
+                "name": req.params.profile,
+                "exist": true,
+                "enough": (list[0].length+list[1].length+list[2].length)>3,
+                "parent_url": page_url
+            });
+        }).catch((err) => {
+            console.log("Promise rejected:",err);
+        });
+    }).catch((err) => {
+        console.log("Unplanned current week");
+        console.log("No plan for week...");
             res.render("profile",{
                 "title": req.params.profile,
                 "week": week,
                 "name": req.params.profile,
                 "exist": false
             });
-        } else { // If there is a plan
-            console.log(plan);
-            current_plan.create_from_list(plan[0],plan[1],plan[2]);
-            current_plan.get_list().then((list) => {        
-                res.render("profile",{
-                    "title": req.params.profile,
-                    "cardio": list[2],
-                    "gym": list[1],
-                    "sport": list[0],
-                    "week": week,
-                    "name": req.params.profile,
-                    "exist": true,
-                    "enough": (list[0].length+list[1].length+list[2].length)>3,
-                    "parent_url": page_url
-                });
-                console.log("Promise resolved");
-            }).catch((err) => {
-                console.log("Promise rejected:",err);
-            });
-        }
     });
 }
 exports.logout = function(req, res) {
@@ -108,29 +106,30 @@ exports.shared_plan = function(req,res) {
 exports.calendar = function(req,res) {
     page_url = req.url;
     calendarDB.get_week(week).then((plan) => {
-        current_plan.create_from_list(plan[0],plan[1],plan[2]);
-        if (!plan) { // If there is no plan
+        current_plan.create_from_list(plan[0].plan[0],plan[0].plan[1],plan[0].plan[2]);
+        current_plan.get_list().then((list) => {        
             res.render("calendar",{
                 "title": req.params.profile,
+                "cardio": list[0],
+                "gym": list[1],
+                "sport": list[2],
                 "week": week,
                 "name": req.params.profile,
-                "exist": false
+                "exist": true,
+                "enough": (list[0].length+list[1].length+list[2].length)>3,
+                "parent_url": page_url
             });
-        } else { // If there is a plan
-            current_plan.get_list().then((list) => {        
-                res.render("calendar",{
-                    "title": req.params.profile,
-                    "cardio": list[2],
-                    "gym": list[1],
-                    "sport": list[0],
-                    "week": week,
-                    "name": req.params.profile,
-                    "exist": true,
-                    "enough": (list[0].length+list[1].length+list[2].length)>3,
-                    "parent_url": page_url
-                });
-            });
-        }
+        }).catch((err) => {
+            console.log("Promise rejected:",err);
+        });
+    }).catch((err) => {
+        console.log("Week unplanned");
+        res.render("calendar",{
+            "title": req.params.profile,
+            "week": week,
+            "name": req.params.profile,
+            "exist": false
+        });
     });
     
 }
@@ -157,9 +156,9 @@ exports.new_plan = function(req,res) {
         res.render("training_plan/new_plan", {
             "title": "New plan",
             "week": week,
-            "cardio": list[2],
+            "cardio": list[0],
             "gym": list[1],
-            "sport": list[0],
+            "sport": list[2],
             "parent_url": page_url,
             "enough": can_post
         });

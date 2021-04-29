@@ -43,6 +43,5 @@ exports.setup = function(app) {
     });
 }
 exports.authorize = function(redirect) {
-    console.log("Trying to redirect to",redirect);
     return passport.authenticate("local", {failureRedirect: redirect});
 }
