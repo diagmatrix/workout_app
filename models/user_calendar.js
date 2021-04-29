@@ -1,3 +1,4 @@
+const { json } = require('body-parser');
 const nedb = require('nedb');
 const training_plan = require("./training_plan");
 
@@ -11,29 +12,34 @@ class user_calendar {
     }
     // Add a week
     add_week(date,plan) {
-        console.log("Adding plan",plan);
         if (plan) {
             plan.get_list().then((data) =>{
+                data.forEach(type => {
+                    type.forEach(exercise => {
+                        delete exercise["_id"]
+                    })
+                    console.log(type);
+                });
                 var entry = {
-                    date: date,
-                    plan: data
-                }
+                    _id: date,
+                    plan: JSON.stringify(data)
+                };
                 this.db.insert(entry,function(err,doc) {
                     if (err) {
                         console.log("ERROR: Could not insert week plan");
                     } else {
-                        console.log("Document inserted in db:",doc);
+                        console.log("Plan inserted in db.");
                     }
                 });
             });
         } else {
             this.db.insert({
-                date: date,
+                _id: date,
                 plan: [[],[],[]]},function(err,doc) {
                 if (err) {
                     console.log("ERROR: Could not insert week plan");
                 } else {
-                    console.log("Document inserted in db:",doc);
+                    console.log("Plan inserted in db");
                 }
             });
         }
@@ -41,44 +47,31 @@ class user_calendar {
     // Getting a week
     get_week(date) {
         var that = this;
-        var plan = new training_plan();
-        var exists = true;
-        console.log("Getting week",date);
-        this.db.findOne({date: date},function(err,doc) {
-            if (err) {
-                console.log("ERROR: Error searching for plan");
-            } else if (!doc) {
-                console.log("WARNING: No entry for this week. Adding it");
-                that.add_week(date,null);
-                exists = false;
-            } else {
-                console.log("Plan found");
-                plan.create_from_list(doc.plan[0],doc.plan[1],doc.plan[2]);
-            }
-        });
-        if (exists) {
-            return plan.get_list();
-        } else {
-            return new Promise((resolve,reject) => {
-                resolve([[],[],[]]);
+        return new Promise((resolve,reject) => {
+            this.db.find({_id: date},function(err,doc) {
+                if (err) {
+                    console.log("ERROR: Error searching for plan");
+                    reject(err);
+                } else if (!doc) {
+                    console.log("WARNING: Void plan.");
+                    that.add_week(date,null);
+                    resolve(null);
+                } else {
+                    console.log(doc.plan);
+                    resolve(doc.plan);
+                }
             });
-        }
+        });        
     }
     // Modify a week
     modify_week(date,plan) {
-        plan.get_list().then((data) =>{
-            this.db.update({date: date},{$set: {
-                plan: plan
-            }},{},function(err,num) {
-                if (err) {
-                    console.log("ERROR: Could not modify week",date);
-                    return false;
-                } else {
-                    console.log("Modified week",date);
-                    return true;
-                }
-            });
+        this.db.remove({_id: date},{},(err,n) => {
+            if (err) {
+                console.log("Error: Could not remove week");
+            }
         });
+        this.db.persistence.compactDatafile();
+        this.add_week(date,plan);
     }
     // Gets the calendar
     get_calendar() {

@@ -30,9 +30,22 @@ router.get("/:profile/shared/:id",controller.shared_plan)
 router.get("/:profile/calendar",ensureLoggedIn("/login"),controller.calendar)
 router.post("/:profile/calendar",ensureLoggedIn("/login"),controller.new_calendar_week)
 
+
+// ------------------------------------------------------------
+// TRAINING PLAN CREATION HANDLING
+// New plan
+router.get("/:profile/calendar/:week-new",ensureLoggedIn("/login"),controller.new_plan)
+router.post("/:profile/calendar/:week-new",ensureLoggedIn("/login"),controller.post_new_plan)
+
 // ------------------------------------------------------------
 // TRAINING PLAN HANDLING
+router.get("*/new-:type",ensureLoggedIn("/login"),controller.new_exercise)
+router.post("*/new-:type",ensureLoggedIn("/login"),controller.post_new_exercise)
+
+// ------------------------------------------------------------
+// TRAINING PLAN HANDLING v1
 // New exercises
+/*
 router.get("/:profile/plan",ensureLoggedIn("/login"),controller.show_plan)
 router.get("/:type/new",ensureLoggedIn("/login"),controller.new_exercise)
 router.post("/:type/new",ensureLoggedIn("/login"),controller.post_new_exercise)
@@ -46,7 +59,7 @@ router.post("/:type/modify/:id",ensureLoggedIn("/login"),controller.post_modify_
 
 // Delete exercises
 router.get("/:type/delete/:id",controller.delete_exercise)
-
+*/
 // ------------------------------------------------------------
 // Other requests
 router.use(function(req,res) {     

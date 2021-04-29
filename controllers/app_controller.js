@@ -5,8 +5,9 @@ const user_calendar = require("../models/user_calendar");
 const { this_monday, change_week } = require("../models/date_management");
 
 var calendarDB = new user_calendar("Testuser");
-const training_plan_db = new training_plan();
+const current_plan = new training_plan();
 var week = this_monday();
+var empty_plan = true;
 
 // ------------------------------------------------------------
 // LANDING PAGE
@@ -57,32 +58,36 @@ exports.userpage = function(req,res) {
     console.log("Profile page of",req.params.profile);
     // URL creation depending of the user logged in
     week = this_monday();
-    console.log("This week is:",week);
-    calendarDB.get_week(week).then((list) => {
-        var plan = (list[0].length+list[1].length+list[2].length)>=3;
-        if (plan) {
-            // If there is a plan
-            res.render("profile",{
-                "title": req.params.profile,
-                "cardio": list[2],
-                "gym": list[1],
-                "sport": list[0],
-                "week": week,
-                "name": req.params.profile,
-                "exist": true
-            });
-        } else {
-            // If there is no plan
+    page_url = req.url;
+    calendarDB.get_week(week).then((plan) => {
+        if (!plan) { // If there is no plan
+            console.log("No plan for week...");
             res.render("profile",{
                 "title": req.params.profile,
                 "week": week,
                 "name": req.params.profile,
                 "exist": false
             });
+        } else { // If there is a plan
+            console.log(plan);
+            current_plan.create_from_list(plan[0],plan[1],plan[2]);
+            current_plan.get_list().then((list) => {        
+                res.render("profile",{
+                    "title": req.params.profile,
+                    "cardio": list[2],
+                    "gym": list[1],
+                    "sport": list[0],
+                    "week": week,
+                    "name": req.params.profile,
+                    "exist": true,
+                    "enough": (list[0].length+list[1].length+list[2].length)>3,
+                    "parent_url": page_url
+                });
+                console.log("Promise resolved");
+            }).catch((err) => {
+                console.log("Promise rejected:",err);
+            });
         }
-        console.log("Promise resolved");
-    }).catch((err) => {
-        console.log("Promise rejected");
     });
 }
 exports.logout = function(req, res) {
@@ -101,32 +106,33 @@ exports.shared_plan = function(req,res) {
 // ------------------------------------------------------------
 // CALENDAR FUNCTIONS
 exports.calendar = function(req,res) {
-    calendarDB.get_week(week).then((list) => {
-        var plan = (list[0].length+list[1].length+list[2].length)>=3;
-        if (plan) {
-            // If there is a plan
+    page_url = req.url;
+    calendarDB.get_week(week).then((plan) => {
+        current_plan.create_from_list(plan[0],plan[1],plan[2]);
+        if (!plan) { // If there is no plan
             res.render("calendar",{
-                "title": "Calendar",
-                "cardio": list[2],
-                "gym": list[1],
-                "sport": list[0],
-                "week": week,
-                "name": req.params.profile,
-                "exist": true
-            });
-        } else {
-            // If there is no plan
-            res.render("calendar",{
-                "title": "Calendar",
+                "title": req.params.profile,
                 "week": week,
                 "name": req.params.profile,
                 "exist": false
             });
+        } else { // If there is a plan
+            current_plan.get_list().then((list) => {        
+                res.render("calendar",{
+                    "title": req.params.profile,
+                    "cardio": list[2],
+                    "gym": list[1],
+                    "sport": list[0],
+                    "week": week,
+                    "name": req.params.profile,
+                    "exist": true,
+                    "enough": (list[0].length+list[1].length+list[2].length)>3,
+                    "parent_url": page_url
+                });
+            });
         }
-        console.log("Promise resolved");
-    }).catch((err) => {
-        console.log("Promise rejected");
     });
+    
 }
 exports.new_calendar_week = function(req,res) {
     console.log("Action:",req.body.week_change);
@@ -137,11 +143,84 @@ exports.new_calendar_week = function(req,res) {
 }
 
 // ------------------------------------------------------------
+// TRAINING PLAN CREATION FUNCTIONS
+exports.new_plan = function(req,res) {
+    week = req.params.week;
+    page_url = req.url;
+    can_post = (!empty_plan & current_plan.get_num()>=3);
+    if (empty_plan) {
+        console.log("Starting new training plan...");
+        current_plan.clear();
+        empty_plan = false;
+    }
+    current_plan.get_list().then((list) => {
+        res.render("training_plan/new_plan", {
+            "title": "New plan",
+            "week": week,
+            "cardio": list[2],
+            "gym": list[1],
+            "sport": list[0],
+            "parent_url": page_url,
+            "enough": can_post
+        });
+        console.log("Promise resolved.",list);
+    }).catch((err) => {
+        console.log("Promise rejected:",err);
+    });
+}
+exports.post_new_plan = function(req,res) {
+    console.log("Creating plan for week:",req.body.plan_week);
+    calendarDB.modify_week(req.body.plan_week,current_plan);
+    empty_plan = true;
+    redirect_url = "/" + req.user.username + "/calendar";
+    res.redirect(redirect_url);
+}
+
+// ------------------------------------------------------------
 // TRAINING PLAN FUNCTIONS
+exports.new_exercise = function(req,res) {
+    var type = req.params.type;
+    console.log("New",type);
+    if (type=="cardio") {
+        res.render("training_plan/new_cardio", {
+            "title": "Add exercise"
+        });
+    } else if (type=="strength") {
+        res.render("training_plan/new_strength", {
+            "title": "Add exercise"
+        });
+    } else if (type=="sport") {
+        res.render("training_plan/new_sport", {
+            "title": "Add exercise"
+        });
+    } else {
+        console.log("Error: No type ",type);
+    }
+}
+exports.post_new_exercise = function(req,res) {
+    var type = req.params.type;
+    console.log("Adding one",type);
+    if (type=="cardio") {
+        current_plan.add_cardio(req.body.name,req.body.distance);
+    } else if (type=="strength") {
+        current_plan.add_strength(req.body.name,req.body.weight,req.body.repetitions);
+    } else if (type=="sport") {
+        current_plan.add_sport(req.body.name,req.body.duration);
+    } else {
+        console.log("Error: No type ",type);
+    }
+    redirect_url = req.url.replace(/\/new-.*/,"");
+    console.log("Redirecting to",redirect_url);
+    res.redirect(redirect_url);
+}
+
+// ------------------------------------------------------------
+// TRAINING PLAN FUNCTIONS v1
+/*
 exports.show_plan = function(req,res) {
     console.log(req.user.username);
     
-    training_plan_db.get_list().then((list) => {
+    current_plan.get_list().then((list) => {
         res.render("training_plan/training_plan",{
             "title": "Training plan",
             "cardio": list[2],
@@ -177,11 +256,11 @@ exports.post_new_exercise = function(req,res) {
     var type = req.params.type;
     console.log("Adding one",type);
     if (type=="cardio") {
-        training_plan_db.add_cardio(req.body.name,req.body.distance);
+        current_plan.add_cardio(req.body.name,req.body.distance);
     } else if (type=="strength") {
-        training_plan_db.add_strength(req.body.name,req.body.weight,req.body.repetitions);
+        current_plan.add_strength(req.body.name,req.body.weight,req.body.repetitions);
     } else if (type=="sport") {
-        training_plan_db.add_sport(req.body.name,req.body.duration);
+        current_plan.add_sport(req.body.name,req.body.duration);
     } else {
         console.log("Error: No type ",type);
     }
@@ -189,14 +268,14 @@ exports.post_new_exercise = function(req,res) {
     res.redirect(redirect_url);
 }
 exports.complete_exercise = function(req,res) {
-    training_plan_db.complete_exercise(req.params.type,req.params.id);
+    current_plan.complete_exercise(req.params.type,req.params.id);
     var redirect_url = "/" + req.user.username + "/plan";
     res.redirect(redirect_url);
 }
 exports.modify_exercise = function(req,res) {
     var type = req.params.type;
 
-    training_plan_db.get_exercise(type,req.params.id).then((data) => {
+    current_plan.get_exercise(type,req.params.id).then((data) => {
         var exercise = data[0]
         switch(type) {
             case "cardio":
@@ -234,11 +313,11 @@ exports.post_modify_exercise = function(req,res) {
     var type = req.params.type;
     console.log("Modifying exercise: ",req.body.id);
     if (type=="cardio") {
-        training_plan_db.modify_cardio(req.body.id,req.body.distance);
+        current_plan.modify_cardio(req.body.id,req.body.distance);
     } else if (type=="strength") {
-        training_plan_db.modify_strength(req.body.id,[req.body.weight,req.body.repetitions]);
+        current_plan.modify_strength(req.body.id,[req.body.weight,req.body.repetitions]);
     } else if (type=="sport") {
-        training_plan_db.modify_sport(req.body.id,req.body.duration);
+        current_plan.modify_sport(req.body.id,req.body.duration);
     } else {
         console.log("Error: No type ",type);
     }
@@ -247,7 +326,8 @@ exports.post_modify_exercise = function(req,res) {
     res.redirect(redirect_url);
 }
 exports.delete_exercise = function(req,res) {
-    training_plan_db.delete_exercise(req.params.type,req.params.id);
+    current_plan.delete_exercise(req.params.type,req.params.id);
     var redirect_url = "/" + req.user.username + "/plan";
     res.redirect(redirect_url);
 }
+*/

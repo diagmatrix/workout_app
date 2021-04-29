@@ -4,8 +4,8 @@ URL TREE:
     /login
     /logout
     /:profile
-        /:profile/:week/new
         /:profile/calendar
+            /:profile/calendar/new/week
         /:profile/stats
         /:profile/records
         /:profile/shared#:id

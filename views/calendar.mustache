@@ -26,7 +26,7 @@
             <article class="column" style="width:40%">
                 <ul class="buttons-container" style="padding:0;margin:0;">
                     <li class="button-box" style="padding:0;margin:0;">
-                        <a href="/logout" class="button">Logout</a>
+                        <a href="/share" class="button">Share plan</a>
                     </li>
                     <li class="button-box" style="padding:0;margin:0;">
                         <a href="/{{name}}" style="color:black;"><i class="fas fa-user-circle fa-4x"></i></a>
@@ -52,10 +52,15 @@
             </li>
         </section>
         {{#exist}}
-            {{>week_plan}}
+            {{>training_plan/week_plan}}
         {{/exist}}
         {{^exist}}
-            {{>void_week_plan}}
+        <section style="border:2px solid black;text-align:center;padding:2em;">
+            <p>
+                Add a plan for this week
+            </p>
+            <a href="/{{name}}/calendar/{{week}}-new" style="color:black"><i class="far fa-calendar-alt fa-5x"></i></a>
+        </section>
         {{/exist}}
     </body>
 </html>

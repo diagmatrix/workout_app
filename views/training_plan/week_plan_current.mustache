@@ -1,0 +1,148 @@
+<div class="row">
+    <div class="column" style="background:#60ee75;">
+        <h2 style="text-align:center;color:#046d14;">Cardio</h2>
+        <ul class="type-container" style="background: #60ee75;">
+            {{#cardio}}
+            <li class="ex-box" style="background: #046d14;color: #60ee75;">
+                <p style="font-weight:bold;">
+                    {{name}}
+                    {{#completed}}
+                    <i class="far fa-check-circle"></i>
+                    {{/completed}}
+                </p>
+                Distance: {{distance}} km
+                <div style="text-align:center;margin-top:1em;">
+                    {{^completed}}
+                    <a href="{{parent_url}}/complete-cardio-{{_id}}">
+                        <i class="fas fa-check fa-2x" style="color:#60ee75;"></i>
+                    </a>
+                    <span style="padding-left:1em">
+                    {{/completed}}
+                        <a href="{{parent_url}}/modify-cardio-{{_id}}">
+                            <i class="fas fa-pen fa-2x" style="color:#60ee75;"></i>
+                        </a>
+                    </span>
+                    {{#enough}}
+                    <span style="padding-left:1em">
+                        <a href="{{parent_url}}/delete-cardio-{{_id}}">
+                            <i class="fas fa-trash fa-2x" style="color:#60ee75;"></i>
+                        </a>
+                    </span>
+                    {{/enough}}
+                </div>
+            </li>
+            {{/cardio}}
+            {{^cardio}}
+            <li class="ex-box" style="background: #046d14;color: #60ee75;">
+                <p style="text-align:center;">
+                    No exercises yet...
+                    </p>
+            </li>
+            {{/cardio}}
+        </ul>
+        <div style="text-align:center;">
+            <a href="{{parent_url}}/new-cardio">
+                <i class="fas fa-plus-square fa-4x" style="color:#046d14;"></i>
+            </a>
+        </div>
+    </div>
+    <div class="column" style="background-color:#eea760;">
+        <h2 style="text-align:center;color:#bb4b0a;">Strength</h2>
+        <ul class="type-container" style="background:#eea760;">
+            {{#gym}}
+            <li class="ex-box" style="background:#bb4b0a;color:#eea760;">
+                <p style="font-weight:bold;">
+                    {{name}}
+                    {{#completed}}
+                    <i class="far fa-check-circle"></i>
+                    {{/completed}}
+                </p>
+                <p>
+                    Weight: {{weight}} kg
+                </p>
+                <p>
+                    Reps: {{repetitions}}
+                </p>
+                <div style="text-align:center;margin-top:1em;">
+                    {{^completed}}
+                    <a href="{{parent_url}}/complete-strength-{{_id}}">
+                        <i class="fas fa-check fa-2x" style="color:#eea760;"></i>
+                    </a>
+                    {{/completed}}
+                    <span style="padding-left:1em">
+                        <a href="{{parent_url}}/modify-strength-{{_id}}">
+                            <i class="fas fa-pen fa-2x" style="color:#eea760;"></i>
+                        </a>
+                    </span>
+                    {{#enough}}
+                    <span style="padding-left:1em">
+                        <a href="{{parent_url}}/delete-strength-{{_id}}">
+                            <i class="fas fa-trash fa-2x" style="color:#eea760;"></i>
+                        </a>
+                    </span>
+                    {{/enough}}
+                </div>
+            </li>
+            {{/gym}}
+            {{^gym}}
+            <li class="ex-box" style="background:#bb4b0a;color:#eea760;">
+                <p style="text-align:center;">
+                    No exercises yet...
+                    </p>
+            </li>
+            {{/gym}}
+        </ul>
+        <div style="text-align:center;">
+            <a href="{{parent_url}}/new-strength">
+                <i class="fas fa-plus-square fa-4x" style="color:#bb4b0a;"></i>
+            </a>
+        </div>
+    </div>
+    <div class="column" style="background-color:#cf57bf;">
+        <h2 style="text-align:center;color:#7a166d;">Sport</h2>
+        <ul class="type-container" style="background:#cf57bf;">
+            {{#sport}}
+            <li class="ex-box" style="background:#7a166d;color:#cf57bf;">
+                <p style="font-weight:bold;">
+                    {{name}}
+                    {{#completed}}
+                    <i class="far fa-check-circle"></i>
+                    {{/completed}}
+                </p>
+                Duration: {{duration}} h
+                <div style="text-align:center;margin-top:1em;">
+                    {{^completed}}
+                    <a href="{{parent_url}}/complete-sport-{{_id}}">
+                        <i class="fas fa-check fa-2x" style="color:#cf57bf;"></i>
+                    </a>
+                    {{/completed}}
+                    <span style="padding-left:1em">
+                        <a href="{{parent_url}}/modify-sport-{{_id}}">
+                            <i class="fas fa-pen fa-2x" style="color:#cf57bf;"></i>
+                        </a>
+                    </span>
+                    {{#enough}}
+                    <span style="padding-left:1em">
+                        <a href="{{parent_url}}/delete-sport-{{_id}}">
+                            <i class="fas fa-trash fa-2x" style="color:#cf57bf;"></i>
+                        </a>
+                    </span>
+                    {{/enough}}
+                </div>
+            </li>
+            {{/sport}}
+            {{^sport}}
+            <li class="ex-box" style="background:#7a166d;color:#cf57bf;">
+                <p style="text-align:center;">
+                    No exercises yet...
+                    </p>
+            </li>
+            {{/sport}}
+            <div style="text-align:center;">
+                <a href="{{parent_url}}/new-sport">
+                    <i class="fas fa-plus-square fa-4x" style="color:#7a166d;"></i>
+                </a>
+            </div>
+        </ul>
+    </div>
+</div>
