@@ -12,6 +12,7 @@ class user_calendar {
     }
     // Add a week
     add_week(date,plan) {
+        this.db.persistence.compactDatafile();
         plan.get_list().then((data) =>{
             data.forEach(type => {
                 type.forEach(exercise => {
@@ -32,7 +33,7 @@ class user_calendar {
     }
     // Getting a week
     get_week(date) {
-        var that = this;
+        this.db.persistence.compactDatafile();
         return new Promise((resolve,reject) => {
             this.db.find({_id: date},function(err,doc) {
                 if (err) {
@@ -49,16 +50,17 @@ class user_calendar {
     }
     // Modify a week
     modify_week(date,plan) {
+        this.db.persistence.compactDatafile();
         this.db.remove({_id: date},{},(err,n) => {
             if (err) {
                 console.log("Error: Could not remove week");
             }
         });
-        this.db.persistence.compactDatafile();
         this.add_week(date,plan);
     }
     // Gets the calendar
     get_calendar() {
+        this.db.persistence.compactDatafile();
         return new Promise((resolve,reject) => {
             this.db.find({},function(err,doc) {
                 if (err) {

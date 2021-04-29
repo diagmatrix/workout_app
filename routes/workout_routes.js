@@ -30,36 +30,22 @@ router.get("/:profile/shared/:id",controller.shared_plan)
 router.get("/:profile/calendar",ensureLoggedIn("/login"),controller.calendar)
 router.post("/:profile/calendar",ensureLoggedIn("/login"),controller.new_calendar_week)
 
-
 // ------------------------------------------------------------
-// TRAINING PLAN CREATION HANDLING
+// TRAINING PLAN HANDLING
 // New plan
 router.get("/:profile/calendar/:week-new",ensureLoggedIn("/login"),controller.new_plan)
 router.post("/:profile/calendar/:week-new",ensureLoggedIn("/login"),controller.post_new_plan)
-
-// ------------------------------------------------------------
-// TRAINING PLAN HANDLING
+// New exercise
 router.get("*/new-:type",ensureLoggedIn("/login"),controller.new_exercise)
 router.post("*/new-:type",ensureLoggedIn("/login"),controller.post_new_exercise)
+// Complete exercise
+router.get("*/complete-:type-:id",ensureLoggedIn("/login"),controller.complete_exercise)
+// Modify exercise
+router.get("*/modify-:type-:id",controller.modify_exercise)
+router.post("*/modify-:type-:id",controller.post_modify_exercise)
+// Delete exercise
+router.get("*/delete-:type-:id",controller.delete_exercise)
 
-// ------------------------------------------------------------
-// TRAINING PLAN HANDLING v1
-// New exercises
-/*
-router.get("/:profile/plan",ensureLoggedIn("/login"),controller.show_plan)
-router.get("/:type/new",ensureLoggedIn("/login"),controller.new_exercise)
-router.post("/:type/new",ensureLoggedIn("/login"),controller.post_new_exercise)
-
-// Complete exercises
-router.get("/:type/complete/:id",ensureLoggedIn("/login"),controller.complete_exercise)
-
-// Modify exercises
-router.get("/:type/modify/:id",ensureLoggedIn("/login"),controller.modify_exercise)
-router.post("/:type/modify/:id",ensureLoggedIn("/login"),controller.post_modify_exercise)
-
-// Delete exercises
-router.get("/:type/delete/:id",controller.delete_exercise)
-*/
 // ------------------------------------------------------------
 // Other requests
 router.use(function(req,res) {     

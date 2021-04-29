@@ -2,12 +2,15 @@ const { response } = require("express");
 const training_plan = require("../models/training_plan");
 const manager = require("../models/manager");
 const user_calendar = require("../models/user_calendar");
-const { this_monday, change_week } = require("../models/date_management");
+const { this_monday, change_week } = require("../models/auxiliaries");
 
+// ------------------------------------------------------------
+// GLOBAL VARIABLES
 var calendarDB = new user_calendar("Testuser");
-const current_plan = new training_plan();
+var current_plan = new training_plan();
 var week = this_monday();
 var empty_plan = true;
+var creating_plan = false;
 
 // ------------------------------------------------------------
 // LANDING PAGE
@@ -61,8 +64,8 @@ exports.userpage = function(req,res) {
     page_url = req.url;
     calendarDB.get_week(week).then((plan) => {
         // If there is a plan
-        current_plan.create_from_list(plan[0].plan[0],plan[0].plan[1],plan[0].plan[2]);
-        current_plan.get_list().then((list) => {        
+        current_plan = new training_plan(plan[0].plan[0],plan[0].plan[1],plan[0].plan[2]);
+        current_plan.get_list().then((list) => {     
             res.render("profile",{
                 "title": req.params.profile,
                 "cardio": list[0],
@@ -78,8 +81,7 @@ exports.userpage = function(req,res) {
             console.log("Promise rejected:",err);
         });
     }).catch((err) => {
-        console.log("Unplanned current week");
-        console.log("No plan for week...");
+        console.log("No plan for week...",err);
             res.render("profile",{
                 "title": req.params.profile,
                 "week": week,
@@ -106,7 +108,7 @@ exports.shared_plan = function(req,res) {
 exports.calendar = function(req,res) {
     page_url = req.url;
     calendarDB.get_week(week).then((plan) => {
-        current_plan.create_from_list(plan[0].plan[0],plan[0].plan[1],plan[0].plan[2]);
+        current_plan = new training_plan(plan[0].plan[0],plan[0].plan[1],plan[0].plan[2]);
         current_plan.get_list().then((list) => {        
             res.render("calendar",{
                 "title": req.params.profile,
@@ -142,7 +144,7 @@ exports.new_calendar_week = function(req,res) {
 }
 
 // ------------------------------------------------------------
-// TRAINING PLAN CREATION FUNCTIONS
+// TRAINING PLAN FUNCTIONS
 exports.new_plan = function(req,res) {
     week = req.params.week;
     page_url = req.url;
@@ -151,6 +153,7 @@ exports.new_plan = function(req,res) {
         console.log("Starting new training plan...");
         current_plan.clear();
         empty_plan = false;
+        creating_plan = true;
     }
     current_plan.get_list().then((list) => {
         res.render("training_plan/new_plan", {
@@ -171,12 +174,10 @@ exports.post_new_plan = function(req,res) {
     console.log("Creating plan for week:",req.body.plan_week);
     calendarDB.modify_week(req.body.plan_week,current_plan);
     empty_plan = true;
+    creating_plan = false;
     redirect_url = "/" + req.user.username + "/calendar";
     res.redirect(redirect_url);
 }
-
-// ------------------------------------------------------------
-// TRAINING PLAN FUNCTIONS
 exports.new_exercise = function(req,res) {
     var type = req.params.type;
     console.log("New",type);
@@ -207,68 +208,18 @@ exports.post_new_exercise = function(req,res) {
         current_plan.add_sport(req.body.name,req.body.duration);
     } else {
         console.log("Error: No type ",type);
+    }
+    if (!creating_plan) {
+        calendarDB.modify_week(week,current_plan);
     }
     redirect_url = req.url.replace(/\/new-.*/,"");
     console.log("Redirecting to",redirect_url);
     res.redirect(redirect_url);
 }
-
-// ------------------------------------------------------------
-// TRAINING PLAN FUNCTIONS v1
-/*
-exports.show_plan = function(req,res) {
-    console.log(req.user.username);
-    
-    current_plan.get_list().then((list) => {
-        res.render("training_plan/training_plan",{
-            "title": "Training plan",
-            "cardio": list[2],
-            "gym": list[1],
-            "sport": list[0]
-        });
-        console.log("Promise resolved.",list);
-    }).catch((err) => {
-        console.log("Promise rejected:",err);
-    });
-}
-exports.new_exercise = function(req,res) {
-    var type = req.params.type;
-    console.log("New",type);
-
-    if (type=="cardio") {
-        res.render("training_plan/new_cardio", {
-            "title": "Add exercise"
-        });
-    } else if (type=="strength") {
-        res.render("training_plan/new_strength", {
-            "title": "Add exercise"
-        });
-    } else if (type=="sport") {
-        res.render("training_plan/new_sport", {
-            "title": "Add exercise"
-        });
-    } else {
-        console.log("Error: No type ",type);
-    }
-}
-exports.post_new_exercise = function(req,res) {
-    var type = req.params.type;
-    console.log("Adding one",type);
-    if (type=="cardio") {
-        current_plan.add_cardio(req.body.name,req.body.distance);
-    } else if (type=="strength") {
-        current_plan.add_strength(req.body.name,req.body.weight,req.body.repetitions);
-    } else if (type=="sport") {
-        current_plan.add_sport(req.body.name,req.body.duration);
-    } else {
-        console.log("Error: No type ",type);
-    }
-    var redirect_url = "/" + req.user.username + "/plan";
-    res.redirect(redirect_url);
-}
 exports.complete_exercise = function(req,res) {
     current_plan.complete_exercise(req.params.type,req.params.id);
-    var redirect_url = "/" + req.user.username + "/plan";
+    calendarDB.modify_week(week,current_plan);
+    redirect_url = req.url.replace(/\/complete-.*/,"");
     res.redirect(redirect_url);
 }
 exports.modify_exercise = function(req,res) {
@@ -320,13 +271,17 @@ exports.post_modify_exercise = function(req,res) {
     } else {
         console.log("Error: No type ",type);
     }
-
-    var redirect_url = "/" + req.user.username + "/plan";
+    if (!creating_plan) {
+        calendarDB.modify_week(week,current_plan);
+    }
+    redirect_url = req.url.replace(/\/modify-.*/,"");
     res.redirect(redirect_url);
 }
 exports.delete_exercise = function(req,res) {
     current_plan.delete_exercise(req.params.type,req.params.id);
-    var redirect_url = "/" + req.user.username + "/plan";
+    if (!creating_plan) {
+        calendarDB.modify_week(week,current_plan);
+    }
+    redirect_url = req.url.replace(/\/delete-.*/,"");
     res.redirect(redirect_url);
 }
-*/

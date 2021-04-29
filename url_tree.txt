@@ -8,4 +8,9 @@ URL TREE:
             /:profile/calendar/new/week
         /:profile/stats
         /:profile/records
-        /:profile/shared#:id
+        /:profile/:id
+
+.../new-:type
+.../complete-:type-:id
+.../delete-:type-:id
+.../modify-:type-:id

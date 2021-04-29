@@ -1,3 +1,5 @@
 **/node_modules
 **/db
 *.db
+url_tree.txt
+clean_start.sh

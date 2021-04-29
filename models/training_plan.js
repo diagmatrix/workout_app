@@ -1,20 +1,31 @@
 const nedb = require('nedb');
-const { this_monday } = require('./date_management');
 
 // Training plan class
 class training_plan {
     // Constructor
-    constructor() {
+    constructor(cardio,strength,sport) {
+        this.num = 0;
         // Strength collection init
         this.db_strength = new nedb();
+        if (strength) {
+            this.db_strength.insert(strength);
+            this.num += strength.length;
+        }
         // Cardio collection init
         this.db_cardio = new nedb();
+        if (cardio) {
+            this.db_cardio.insert(cardio);
+            this.num += cardio.length;
+        }
         // Sports collection init
         this.db_sport = new nedb();
-        this.num = 0;
-        console.log("New void training plan object created");
+        if (sport) {
+            this.db_sport.insert(sport);
+            this.num += sport.length;
+        }
+        console.log("Training plan object created with",this.num,"entries");
     }
-    // Creates a plan from a list
+    // Creates a plan from a list (DEPRECATED)
     create_from_list(cardio,strength,sport) {
         this.clear();
         // Adding all cardio entries
@@ -26,6 +37,7 @@ class training_plan {
 
         this.num += cardio.length + strength.length + sport.length;
         console.log("New training plan created with "+this.num+" exercises");
+        console.log(cardio,strength,sport);
     }
     // Adds one sport entry
     add_sport(name,dur) {
@@ -259,6 +271,9 @@ class training_plan {
             }
         });
         this.num = 0;
+        this.db_cardio.persistence.compactDatafile();
+        this.db_strength.persistence.compactDatafile();
+        this.db_sport.persistence.compactDatafile();
     }
 }
 
