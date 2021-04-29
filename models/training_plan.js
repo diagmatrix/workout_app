@@ -1,37 +1,22 @@
 const nedb = require('nedb');
+const { this_monday } = require('./date_management');
 
 // Training plan class
 class training_plan {
     // Constructor
-    constructor(db_file_path_strength,db_file_path_cardio,db_file_path_sport) {
+    constructor() {
         // Strength collection init
-        if (db_file_path_strength) {
-            this.db_strength = new nedb({filename: db_file_path_strength,autoload: true});
-            console.log("strength DB connected to "+db_file_path_strength);
-        } else {
-            this.db_strength = new nedb();
-            console.log("Strength db created");
-        }
+        this.db_strength = new nedb();
         // Cardio collection init
-        if (db_file_path_cardio) {
-            this.db_cardio = new nedb({filename: db_file_path_cardio,autoload: true});
-            console.log("Cardio DB connected to "+db_file_path_cardio);
-        } else {
-            this.db_cardio = new nedb();
-            console.log("Cardio db created");
-        }
+        this.db_cardio = new nedb();
         // Sports collection init
-        if (db_file_path_sport) {
-            this.db_sport = new nedb({filename: db_file_path_sport,autoload: true});
-            console.log("strength DB connected to "+db_file_path_sport);
-        } else {
-            this.db_sport = new nedb();
-            console.log("Sport db created");
-        }
+        this.db_sport = new nedb();
         this.num = 0;
+        console.log("New training plan object created");
     }
     // Creates a plan from a list
     create_from_list(cardio,strength,sport) {
+        this.clear();
         // Adding all cardio entries
         this.db_cardio.insert(cardio,function(err,docs) {
             docs.forEach(function(d) {
@@ -50,6 +35,8 @@ class training_plan {
                 console.log("Added to sport db:",d);
             });
         });
+        this.num += cardio.length + strength.length + sport.length;
+        console.log("New training plan object created with "+this.num+" exercises");
     }
     // Adds one sport entry
     add_sport(name,dur) {
@@ -274,6 +261,32 @@ class training_plan {
     // Creates a training plan from scratch from a key (assumes empty plan)
     set_preset(key) {
         // TODO
+    }
+    // Deletes all entries
+    clear() {
+        console.log("Clearing training plan object");
+        this.db_cardio.remove({},(err,num) => {
+            if (err) {
+                console.log("Error clearing cardio DB");
+            } else {
+                console.log("Removed "+num+" entries form cardio DB");
+            }
+        });
+        this.db_strength.remove({},(err,num) => {
+            if (err) {
+                console.log("Error clearing strength DB");
+            } else {
+                console.log("Removed "+num+" entries form strength DB");
+            }
+        });
+        this.db_sport.remove({},(err,num) => {
+            if (err) {
+                console.log("Error clearing sport DB");
+            } else {
+                console.log("Removed "+num+" entries form sport DB");
+            }
+        });
+        this.num = 0;
     }
 }
 

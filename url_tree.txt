@@ -1,0 +1,11 @@
+URL TREE:
+/
+    /register
+    /login
+    /logout
+    /:profile
+        /:profile/calendar
+            /:profile/calendar/new/week
+        /:profile/stats
+        /:profile/records
+        /:profile/shared#:id

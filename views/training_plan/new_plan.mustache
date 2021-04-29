@@ -1,0 +1,33 @@
+<html>
+    <head>
+        {{>header}}
+        <style>
+            button {
+                background-color: white;
+                color: black;
+                border:none;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                transition-duration: 0.4s;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color:white;
+                color:#555555;
+            }
+        </style>
+    </head>
+    <body>
+        <h2 style="text-align: center;">Create a new plan for week {{week}}</h2>
+        {{>training_plan/week_plan}}
+        {{#enough}}
+        <section>
+            <p style="text-align: center;">Generate plan</p>
+            <form method="post" role="form">
+                <button name="plan_week" type="submit" value={{week}}>Add plan</button>
+            </form>
+        </section>
+        {{/enough}}
+    </body>
+</html>

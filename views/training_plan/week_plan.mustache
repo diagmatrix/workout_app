@@ -12,21 +12,17 @@
                 </p>
                 Distance: {{distance}} km
                 <div style="text-align:center;margin-top:1em;">
-                    {{^completed}}
-                    <a href="/cardio/complete/{{_id}}">
-                        <i class="fas fa-check fa-2x" style="color:#60ee75;"></i>
-                    </a>
-                    <span style="padding-left:1em">
-                    {{/completed}}
-                        <a href="/cardio/modify/{{_id}}">
+                        <a href="{{parent_url}}/modify-cardio-{{_id}}">
                             <i class="fas fa-pen fa-2x" style="color:#60ee75;"></i>
                         </a>
                     </span>
+                    {{#enough}}
                     <span style="padding-left:1em">
-                        <a href="/cardio/delete/{{_id}}">
+                        <a href="{{parent_url}}/delete-cardio-{{_id}}">
                             <i class="fas fa-trash fa-2x" style="color:#60ee75;"></i>
                         </a>
                     </span>
+                    {{/enough}}
                 </div>
             </li>
             {{/cardio}}
@@ -39,7 +35,7 @@
             {{/cardio}}
         </ul>
         <div style="text-align:center;">
-            <a href="/cardio/new">
+            <a href="{{parent_url}}/new-cardio">
                 <i class="fas fa-plus-square fa-4x" style="color:#046d14;"></i>
             </a>
         </div>
@@ -62,21 +58,18 @@
                     Reps: {{repetitions}}
                 </p>
                 <div style="text-align:center;margin-top:1em;">
-                    {{^completed}}
-                    <a href="/strength/complete/{{_id}}">
-                        <i class="fas fa-check fa-2x" style="color:#eea760;"></i>
-                    </a>
-                    {{/completed}}
                     <span style="padding-left:1em">
-                        <a href="/strength/modify/{{_id}}">
+                        <a href="{{parent_url}}/modify-strength-{{_id}}">
                             <i class="fas fa-pen fa-2x" style="color:#eea760;"></i>
                         </a>
                     </span>
+                    {{#enough}}
                     <span style="padding-left:1em">
-                        <a href="/strength/delete/{{_id}}">
+                        <a href="{{parent_url}}/delete-strength-{{_id}}">
                             <i class="fas fa-trash fa-2x" style="color:#eea760;"></i>
                         </a>
                     </span>
+                    {{/enough}}
                 </div>
             </li>
             {{/gym}}
@@ -89,7 +82,7 @@
             {{/gym}}
         </ul>
         <div style="text-align:center;">
-            <a href="/strength/new">
+            <a href="{{parent_url}}/new-strength">
                 <i class="fas fa-plus-square fa-4x" style="color:#bb4b0a;"></i>
             </a>
         </div>
@@ -107,21 +100,18 @@
                 </p>
                 Duration: {{duration}} h
                 <div style="text-align:center;margin-top:1em;">
-                    {{^completed}}
-                    <a href="/sport/complete/{{_id}}">
-                        <i class="fas fa-check fa-2x" style="color:#cf57bf;"></i>
-                    </a>
-                    {{/completed}}
                     <span style="padding-left:1em">
-                        <a href="/sport/modify/{{_id}}">
+                        <a href="{{parent_url}}/modify-sport-{{_id}}">
                             <i class="fas fa-pen fa-2x" style="color:#cf57bf;"></i>
                         </a>
                     </span>
+                    {{#enough}}
                     <span style="padding-left:1em">
-                        <a href="/sport/delete/{{_id}}">
+                        <a href="{{parent_url}}/delete-sport-{{_id}}">
                             <i class="fas fa-trash fa-2x" style="color:#cf57bf;"></i>
                         </a>
                     </span>
+                    {{/enough}}
                 </div>
             </li>
             {{/sport}}
@@ -133,7 +123,7 @@
             </li>
             {{/sport}}
             <div style="text-align:center;">
-                <a href="/sport/new">
+                <a href="{{parent_url}}/new-sport">
                     <i class="fas fa-plus-square fa-4x" style="color:#7a166d;"></i>
                 </a>
             </div>
