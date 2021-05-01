@@ -20,6 +20,16 @@ function change_week(current,action) {
             return current; 
     }
 }
+// Removes the ids of the list of exercises of a training plan
+function remove_ids(data) {
+    data.forEach(type => {
+        type.forEach(exercise => {
+            delete exercise["_id"];
+            exercise = JSON.stringify(exercise);
+        })
+        type = JSON.stringify(type);
+    });
+}
 
 
-module.exports = {this_monday, change_week}
+module.exports = {this_monday, change_week, remove_ids}

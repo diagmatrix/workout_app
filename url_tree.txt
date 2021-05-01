@@ -4,13 +4,15 @@ URL TREE:
     /login
     /logout
     /:profile
+        /:profile/complete-:type-:id
         /:profile/calendar
-            /:profile/calendar/new/week
+            /:profile/calendar/:week-share
+            /:profile/calendar/:week-new
         /:profile/stats
         /:profile/records
         /:profile/:id
+    /shared-:id
 
 .../new-:type
-.../complete-:type-:id
 .../delete-:type-:id
 .../modify-:type-:id

@@ -9,6 +9,11 @@ const controller = require("../controllers/app_controller");
 router.get("/",controller.landing_page)
 
 // ------------------------------------------------------------
+// PLAN SHARING
+router.get("/:profile/calendar/:week-share",ensureLoggedIn("/login"),controller.share_plan)
+router.get("/shared-:id",controller.show_shared_plan)
+
+// ------------------------------------------------------------
 // USER HANDLING
 // Register user
 router.get("/register",controller.register)
@@ -20,10 +25,6 @@ router.post("/login",auth.authorize("/login"),controller.post_login)
 router.get("/logout",controller.logout)
 // Main user page
 router.get("/:profile",ensureLoggedIn("/login"),controller.userpage)
-
-// ------------------------------------------------------------
-// PLAN SHARING
-router.get("/:profile/shared/:id",controller.shared_plan)
 
 // ------------------------------------------------------------
 // CALENDAR PAGE

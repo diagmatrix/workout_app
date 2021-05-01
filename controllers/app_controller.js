@@ -99,8 +99,43 @@ exports.logout = function(req, res) {
 // ------------------------------------------------------------
 // SHARING PLAN FUNCTIONS
 // TODO
-exports.shared_plan = function(req,res) {
-    console.log("Shared plan id:",req.params.id," of user:",req.params.profile);
+exports.share_plan = function(req,res) {
+    manager.get_plan(week,req.user.username).then((entry) => {
+        // Plan has been shared
+        res.render("user/shared", {
+            "title": "Share link",
+            "url_link": "/shared-" + entry[0]._id,
+            "user": req.user.username
+        });
+    }).catch((err) => {
+        // If the plan has not been shared before
+        console.log("Plan not shared before");
+        current_plan.get_list().then((list) => {
+            manager.add_plan(week,req.user.username,list);
+            manager.get_plan(week,req.user.username).then((entry) => {
+                res.render("user/shared", {
+                    "title": "Share link",
+                    "url_link": "/shared-" + entry[0]._id,
+                    "user": req.user.username
+                });
+            });
+        });
+    });
+}
+exports.show_shared_plan = function(req,res) {
+    manager.get_plan_id(req.params.id).then((entry) => {
+        res.render("training_plan/shared_plan", {
+            "title": "Shared plan",
+            "user": entry[0].username,
+            "week": entry[0].week,
+            "cardio": entry[0].plan[0],
+            "gym": entry[0].plan[1],
+            "sport": entry[0].plan[2]
+        });
+    }).catch((err) => {    
+        res.type("text/plain");     
+        res.send("Not found:"+err); 
+    });
 }
 
 // ------------------------------------------------------------

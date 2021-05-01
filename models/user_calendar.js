@@ -1,6 +1,7 @@
 const { json } = require('body-parser');
 const nedb = require('nedb');
 const training_plan = require("./training_plan");
+const { remove_ids } = require("./auxiliaries")
 
 // User's calendar class
 class user_calendar {
@@ -14,13 +15,7 @@ class user_calendar {
     add_week(date,plan) {
         this.db.persistence.compactDatafile();
         plan.get_list().then((data) =>{
-            data.forEach(type => {
-                type.forEach(exercise => {
-                    delete exercise["_id"];
-                    exercise = JSON.stringify(exercise);
-                })
-                type = JSON.stringify(type);
-            });
+            remove_ids(data);
             this.db.insert({
                 _id: date,
                 plan: data

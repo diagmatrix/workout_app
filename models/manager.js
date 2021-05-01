@@ -2,6 +2,7 @@ const nedb = require("nedb");
 const bcrypt = require("bcrypt");
 const { resolve } = require("path");
 const { rejects } = require("assert");
+const { remove_ids } = require("./auxiliaries")
 const salt_rounds = 10
 
 // Manager class
@@ -42,29 +43,40 @@ class manager {
         });
     }
     // Gets a plan
-    static get_plan(id) {
+    static get_plan(week,user) {
+        return new Promise((resolve,reject) => {
+            this.#plans.find({username: user, week: week},function(err,entry) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(entry);
+                }
+            })
+        });
+    }
+    // Returns plan with an id
+    static get_plan_id(id) {
         return new Promise((resolve,reject) => {
             this.#plans.find({_id: id},function(err,entry) {
                 if (err) {
                     reject(err);
                 } else {
                     resolve(entry);
-                    console.log("Plan",id,"found!");
                 }
             })
-        })
+        });
     }
     // Adds a plan
-    static add_plan(plan,user) {
-        var added_plan = plan;
-        added_plan["username"] = user;
-        this.#plans.insert(added_plan,function(err) {
+    static add_plan(week,user,plan) {
+        remove_ids(plan);
+        var added_plan = {
+            plan: plan,
+            username: user,
+            week: week
+        }
+        this.#plans.insert(added_plan,function(err,doc) {
             if (err) {
                 console.log("Cannot insert plan");
-                return false;
-            } else {
-                console.log("Added plan");
-                return true;
             }
         });
     }
