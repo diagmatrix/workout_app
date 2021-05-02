@@ -2,6 +2,22 @@ const startOfWeek = require('date-fns/startOfWeek')
 const add = require('date-fns/add')
 const sub = require('date-fns/sub')
 
+const cardio_list = [
+    "Running","Cycling","Hiking","Jogging",
+    "Swimming","Racewalking","Walking"
+];
+const gym_list = [
+    "Squat","Front Squat","Bench Press","Shoulder Press","Pull-up",
+    "Back Row","Deadlift","Romanian Deadlift","Bicep Curl",
+    "Clean","Clean & Jerk","Thruster","Tricep Curl","Hip Thrust"
+];
+const sport_list = [
+    "Badminton","Padel","Tennis","Voleyball","Basketball",
+    "Baseball","Cricket","Skateboarding","Surfing",
+    "Martial arts","Yoga","Football","Rugby",
+    "American Football","Handball","Gymnastics","Hockey"
+];
+
 // Calculates current week's Monday
 function this_monday() {
     var monday = startOfWeek(new Date(),{weekStartsOn: 1});
@@ -30,6 +46,5 @@ function remove_ids(data) {
         type = JSON.stringify(type);
     });
 }
-
 
 module.exports = {this_monday, change_week, remove_ids}
