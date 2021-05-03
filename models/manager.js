@@ -1,7 +1,5 @@
 const nedb = require("nedb");
 const bcrypt = require("bcrypt");
-const { resolve } = require("path");
-const { rejects } = require("assert");
 const { remove_ids } = require("./auxiliaries")
 const salt_rounds = 10
 

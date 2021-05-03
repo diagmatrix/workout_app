@@ -1,6 +1,5 @@
 const { json } = require('body-parser');
 const nedb = require('nedb');
-const training_plan = require("./training_plan");
 const { remove_ids } = require("./auxiliaries")
 
 // User's calendar class

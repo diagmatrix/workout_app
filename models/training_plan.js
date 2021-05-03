@@ -200,7 +200,6 @@ class training_plan {
             })
         });
         
-        console.log("Number of exercises:",this.num);
         return Promise.all([cardio_entries,strength_entries,sport_entries,]);
     }
     // Gets the total number of exercises

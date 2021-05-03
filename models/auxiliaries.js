@@ -1,6 +1,7 @@
 const startOfWeek = require('date-fns/startOfWeek')
 const add = require('date-fns/add')
 const sub = require('date-fns/sub')
+const eachWeekOfInterval = require('date-fns/eachWeekOfInterval')
 
 const cardio_list = [
     "Running","Cycling","Hiking","Jogging",
@@ -17,7 +18,6 @@ const sport_list = [
     "Martial arts","Yoga","Football","Rugby",
     "American Football","Handball","Gymnastics","Hockey"
 ];
-
 // Calculates current week's Monday
 function this_monday() {
     var monday = startOfWeek(new Date(),{weekStartsOn: 1});
@@ -46,5 +46,29 @@ function remove_ids(data) {
         type = JSON.stringify(type);
     });
 }
+// Creates a line chart for the progress of an exercise
+function create_chart(progress) {
+    if (progress.length==0)
+        return null;
+    // Creates labels
+    var weeks = eachWeekOfInterval({
+        start: new Date(progress[0].week),
+        end: new Date(this_monday())
+    },{weekStartsOn: 1});
+    var labels = [];
+    weeks.forEach(w => {
+        labels.push({week: w.getFullYear() + "-" + (w.getMonth()+1) + "-" + w.getDate()});
+    });
+    // Creates data
+    labels.forEach(y => {
+        y.record = "-";
+        progress.forEach(x => {
+            if (x.week==y.week) {
+                y.record = x.record;
+            }
+        });
+    });
+    return labels;
+}
 
-module.exports = {this_monday, change_week, remove_ids}
+module.exports = {this_monday, change_week, remove_ids, cardio_list, gym_list, sport_list, create_chart}
