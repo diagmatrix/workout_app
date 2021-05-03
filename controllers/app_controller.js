@@ -14,6 +14,7 @@ var empty_plan = true;
 var creating_plan = false;
 var history = new achievements();
 var current_exercise = "Walking";
+const forbidden = /[^A-Za-z0-9]/;
 
 // ------------------------------------------------------------
 // LANDING PAGE
@@ -40,16 +41,23 @@ exports.post_register = function(req,res) {
         res.send(401, 'no user or no password'); 
         return;
     }
-    manager.check_user(user,function(err,name) {
-        if (name) {
-            console.log("Error: User exists");
-            res.render("user/register", { "user-name-error": true});
-        } else {
-            console.log("Creating user");
-            manager.add_user(user,pass);
-            res.redirect("/");
-        }
-    })
+    if (forbidden.test(user)) {
+        // Forbid some usernames
+        console.log("Error: Username forbidden");
+        res.render("user/register", { "user-name-invalid": true});
+    } else {
+        // Create username
+        manager.check_user(user,function(err,name) {
+            if (name) {
+                console.log("Error: User exists");
+                res.render("user/register", { "user-name-error": true});
+            } else {
+                console.log("Creating user");
+                manager.add_user(user,pass);
+                res.redirect("/");
+            }
+        });
+    }
 }
 exports.login = function(req,res) {
     res.render("user/login",{"title": "Login"});

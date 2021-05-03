@@ -32,6 +32,11 @@
                 Username already taken
             </div>
             {{/user-name-error}}
+            {{#user-name-invalid}}
+            <div class="form-group" style="background: #a30000;color:#ffffff;text-align:center;padding:2px;width:90%;margin: top 4px; bottom: 4px;;">
+                You can only use [A-Za-z0-9] for the username
+            </div>
+            {{/user-name-invalid}}
             <div class="form-group">
                 <label for="username">Username: </label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter user name" required>
