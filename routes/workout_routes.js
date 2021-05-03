@@ -32,6 +32,15 @@ router.get("/:profile/calendar",ensureLoggedIn("/login"),controller.calendar)
 router.post("/:profile/calendar",ensureLoggedIn("/login"),controller.new_calendar_week)
 
 // ------------------------------------------------------------
+// STATS PAGE
+router.get("/:profile/stats",ensureLoggedIn("/login"),controller.stats)
+router.post("/:profile/stats",ensureLoggedIn("/login"),controller.change_exercise_stats)
+
+// ------------------------------------------------------------
+// RECORDS PAGE
+router.get("/:profile/records",ensureLoggedIn("/login"),controller.records)
+
+// ------------------------------------------------------------
 // TRAINING PLAN HANDLING
 // New plan
 router.get("/:profile/calendar/:week-new",ensureLoggedIn("/login"),controller.new_plan)

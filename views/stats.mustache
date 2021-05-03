@@ -1,0 +1,103 @@
+<html>
+    <head>
+        {{>header}}
+        <style>
+            table, th, td {
+                text-align:center;
+                border-bottom: 1px solid black;
+                border-collapse: collapse;
+            }
+            th, td {
+                padding: 3px;
+            }
+            table {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <section class="row">
+            <article class="column" style="width:60%">
+                <h1 style="font-size: 20pt;">Exercise stats</h1>
+            </article>
+            <article class="column" style="width:40%;text-align:right;">
+                <a href="/{{name}}" style="color:black;"><i class="fas fa-user-circle fa-4x"></i></a>
+            </article>
+        </section>
+        <form method="post" role="form" style="text-align:center;">
+            <div class="form-group">
+                <select name="change_exercise" id="change_exercise">
+                    <option value="Walking">Walking</option>
+                    <option value="Running">Running</option>
+                    <option value="Cycling">Cycling</option>
+                    <option value="Hiking">Hiking</option>
+                    <option value="Jogging">Jogging</option>
+                    <option value="Swimming">Swimming</option>
+                    <option value="Racewalking">Racewalking</option>
+                    <option value="Squat">Squat</option>
+                    <option value="Front Squat">Front Squat</option>
+                    <option value="Bench Press">Bench Press</option>
+                    <option value="Shoulder Press">Shoulder Press</option>
+                    <option value="Back Row">Back Row</option>
+                    <option value="Deadlift">Deadlift</option>
+                    <option value="Pull-up">Pull-up</option>
+                    <option value="Romanian Deadlift">Romanian Deadlift</option>
+                    <option value="Bicep Curl">Bicep Curl</option>
+                    <option value="Clean">Clean</option>
+                    <option value="Clean & Jerk">Clean & Jerk</option>
+                    <option value="Thruster">Thruster</option>
+                    <option value="Tricep Curl">Tricep Curl</option>
+                    <option value="Hip Thrust">Hip Thrust</option>
+                    <option value="Badminton">Badminton</option>
+                    <option value="Padel">Padel</option>
+                    <option value="Tennis">Tennis</option>
+                    <option value="Voleyball">Voleyball</option>
+                    <option value="Basketball">Basketball</option>
+                    <option value="Baseball">Baseball</option>
+                    <option value="Cricket">Cricket</option>
+                    <option value="Surfing">Surfing</option>
+                    <option value="Martial arts">Martial arts</option>
+                    <option value="Football">Football</option>
+                    <option value="Yoga">Yoga</option>
+                    <option value="Rugby">Rugby</option>
+                    <option value="American Football">American Football</option>
+                    <option value="Handball">Handball</option>
+                    <option value="Gymnastics">Gymnastics</option>
+                    <option value="Hockey">Hockey</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Select exercise" class="button">
+            </div>
+        </form>
+        <section class="row">
+            <article class="column" style="width: 50%;">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+            </article>
+            <article class="column" style="width:50%;">
+                <h2 style="text-align:center;">{{exercise}}</h2>
+                <table>
+                    <tr>
+                        <th>Week</th>
+                        <th>Record</th>
+                    </tr>
+                    {{#progress}}
+                    <tr>
+                        <td>{{week}}</td>
+                        <td>{{record}}</td>
+                    </tr>
+                    {{/progress}}
+                </table>
+                {{^progress}}
+                    <p style="text-align:center;">
+                        No stats for this exercise...
+                    </p>
+                {{/progress}}
+            </article>
+        </section>
+    </body>
+    </body>
+</html>

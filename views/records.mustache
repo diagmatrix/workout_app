@@ -1,0 +1,50 @@
+<html>
+    <head>
+        {{>header}}
+    </head>
+    <body>
+        <section class="row">
+            <article class="column" style="width:60%">
+                <h1 style="font-size: 20pt;">{{name}}'s records</h1>
+            </article>
+            <article class="column" style="width:40%;text-align:right;">
+                <a href="/{{name}}" style="color:black;"><i class="fas fa-user-circle fa-4x"></i></a>
+            </article>
+        </section>
+        <section class="row">
+            <div class="column" style="background:#60ee75;">
+                <h2 style="text-align:center;color:#046d14;">Cardio</h2>
+                <ul class="type-container" style="background: #60ee75;">
+                    {{#cardio}}
+                    <li class="ex-box" style="background: #046d14;color: #60ee75;">
+                        <p style="font-weight:bold;">{{name}}</p>
+                        Record: {{record}} km
+                    </li>
+                    {{/cardio}}
+                </ul>
+            </div>
+            <div class="column" style="background-color:#eea760;">
+                <h2 style="text-align:center;color:#bb4b0a;">Strength</h2>
+                <ul class="type-container" style="background:#eea760;">
+                    {{#gym}}
+                    <li class="ex-box" style="background:#bb4b0a;color:#eea760;">
+                        <p style="font-weight:bold;">{{name}}</p>
+                            Record: {{record}} kg
+                    </li>
+                    {{/gym}}
+                </ul>
+            </div>
+            <div class="column" style="background-color:#cf57bf;">
+                <h2 style="text-align:center;color:#7a166d;">Sport</h2>
+                <ul class="type-container" style="background:#cf57bf;">
+                    {{#sport}}
+                    <li class="ex-box" style="background:#7a166d;color:#cf57bf;">
+                        <p style="font-weight:bold;">{{name}}</p>
+                        Record: {{record}} h
+                    </li>
+                    {{/sport}}
+                </ul>
+            </div>
+        </section>
+    </body>
+</html>

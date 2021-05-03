@@ -25,20 +25,6 @@ class training_plan {
         }
         console.log("Training plan object created with",this.num,"entries");
     }
-    // Creates a plan from a list (DEPRECATED)
-    create_from_list(cardio,strength,sport) {
-        this.clear();
-        // Adding all cardio entries
-        this.db_cardio.insert(cardio);
-        // Adding all strength entries
-        this.db_strength.insert(strength);
-        // Adding all sport entries
-        this.db_sport.insert(sport);
-
-        this.num += cardio.length + strength.length + sport.length;
-        console.log("New training plan created with "+this.num+" exercises");
-        console.log(cardio,strength,sport);
-    }
     // Adds one sport entry
     add_sport(name,dur) {
         var entry = {
@@ -200,7 +186,6 @@ class training_plan {
             })
         });
         
-        console.log("Number of exercises:",this.num);
         return Promise.all([cardio_entries,strength_entries,sport_entries,]);
     }
     // Gets the total number of exercises
@@ -248,32 +233,48 @@ class training_plan {
             }
         });
     }
-    // Creates a training plan from scratch from a key (assumes empty plan)
+    // Adds a specific list of exercises to the plan
     set_preset(key) {
-        // TODO
-    }
-    // Deletes all entries
-    clear() {
-        console.log("Clearing training plan object");
-        this.db_cardio.remove({},(err,num) => {
-            if (err) {
-                console.log("Error clearing cardio DB");
-            }
-        });
-        this.db_strength.remove({},(err,num) => {
-            if (err) {
-                console.log("Error clearing strength DB");
-            }
-        });
-        this.db_sport.remove({},(err,num) => {
-            if (err) {
-                console.log("Error clearing sport DB");
-            }
-        });
-        this.num = 0;
-        this.db_cardio.persistence.compactDatafile();
-        this.db_strength.persistence.compactDatafile();
-        this.db_sport.persistence.compactDatafile();
+        switch (key) {
+            case "outdoors":
+                this.add_cardio("Hiking","10");
+                this.add_cardio("Walking","10");
+                this.add_cardio("Cycling","10");
+                break;
+            case "chest":
+                this.add_strength("Bench Press","10","10");
+                this.add_strength("Incline Press","10","10");
+                this.add_strength("Dumbbell Chest Flyes","10","10");
+                this.add_strength("Cable Crossovers","10","10");
+                this.add_strength("Push-Up","10","10");
+                break;
+            case "shoulders":
+                this.add_strength("Shoulder Press","10","10");
+                this.add_strength("Lateral Dumbbell Raises","10","10");
+                this.add_strength("Front Dumbbell Raises","10","10");
+                this.add_strength("Upright Rows","10","10");
+                this.add_strength("Dumbbell Shrugs","10","10");
+                break;
+            case "legs":
+                this.add_strength("Squat","10","10");
+                this.add_strength("Leg Press","10","10");
+                this.add_strength("Leg Extensions","10","10");
+                this.add_strength("Calf Raises","10","10");
+                break;
+            case "back":
+                this.add_strength("Back Row","10","10");
+                this.add_strength("Pull-Up","10","10");
+                this.add_strength("Row","10","10");
+                this.add_strength("Hyperextensions","10","10");
+                break;
+            case "arms":
+                this.add_strength("Bicep Curl","10","10");
+                this.add_strength("Tricep Curl","10","10");
+                this.add_strength("Skull-crushers","10","10");
+                this.add_strength("Bench Press","10","10");
+                break;
+        }
+                
     }
 }
 

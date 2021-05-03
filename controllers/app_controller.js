@@ -2,7 +2,8 @@ const { response } = require("express");
 const training_plan = require("../models/training_plan");
 const manager = require("../models/manager");
 const user_calendar = require("../models/user_calendar");
-const { this_monday, change_week } = require("../models/auxiliaries");
+const achievements = require("../models/achievements");
+const { this_monday, change_week, create_chart } = require("../models/auxiliaries");
 
 // ------------------------------------------------------------
 // GLOBAL VARIABLES
@@ -11,6 +12,8 @@ var current_plan = new training_plan();
 var week = this_monday();
 var empty_plan = true;
 var creating_plan = false;
+var history = new achievements();
+var current_exercise = "Walking";
 
 // ------------------------------------------------------------
 // LANDING PAGE
@@ -66,7 +69,7 @@ exports.userpage = function(req,res) {
         // If there is a plan
         current_plan = new training_plan(plan[0].plan[0],plan[0].plan[1],plan[0].plan[2]);
         current_plan.get_list().then((list) => {     
-            res.render("profile",{
+            res.render("user/profile",{
                 "title": req.params.profile,
                 "cardio": list[0],
                 "gym": list[1],
@@ -82,7 +85,7 @@ exports.userpage = function(req,res) {
         });
     }).catch((err) => {
         console.log("No plan for week...",err);
-            res.render("profile",{
+            res.render("user/profile",{
                 "title": req.params.profile,
                 "week": week,
                 "name": req.params.profile,
@@ -145,7 +148,7 @@ exports.calendar = function(req,res) {
     calendarDB.get_week(week).then((plan) => {
         current_plan = new training_plan(plan[0].plan[0],plan[0].plan[1],plan[0].plan[2]);
         current_plan.get_list().then((list) => {        
-            res.render("calendar",{
+            res.render("user/calendar",{
                 "title": req.params.profile,
                 "cardio": list[0],
                 "gym": list[1],
@@ -161,7 +164,7 @@ exports.calendar = function(req,res) {
         });
     }).catch((err) => {
         console.log("Week unplanned");
-        res.render("calendar",{
+        res.render("user/calendar",{
             "title": req.params.profile,
             "week": week,
             "name": req.params.profile,
@@ -179,6 +182,41 @@ exports.new_calendar_week = function(req,res) {
 }
 
 // ------------------------------------------------------------
+// RECORD FUNCTIONS
+exports.stats = function(req,res) {
+    calendarDB.get_calendar().then((list) => {
+        history = new achievements(list);
+        history.get_progress(current_exercise).then((exercise) =>{
+            res.render("stats", {
+                "title": req.params.profile + "'s stats",
+                "name": req.params.profile,
+                "exercise": current_exercise,
+                "progress": create_chart(exercise[0].progress)
+            });
+        });
+    });
+}
+exports.change_exercise_stats = function(req,res) {
+    current_exercise = req.body.change_exercise;
+    redirect_url = "/" + req.params.profile + "/stats";
+    res.redirect(redirect_url);
+}
+exports.records = function(req,res) {
+    calendarDB.get_calendar().then((list) => {
+        history = new achievements(list);
+        history.get_records().then((records) => {
+            res.render("records", {
+                "title": req.params.profile + "'s records",
+                "name": req.params.profile,
+                "cardio": records[0],
+                "gym": records[1],
+                "sport": records[2]
+            });
+        })
+    });
+}
+
+// ------------------------------------------------------------
 // TRAINING PLAN FUNCTIONS
 exports.new_plan = function(req,res) {
     week = req.params.week;
@@ -186,7 +224,7 @@ exports.new_plan = function(req,res) {
     can_post = (!empty_plan & current_plan.get_num()>=3);
     if (empty_plan) {
         console.log("Starting new training plan...");
-        current_plan.clear();
+        current_plan = new training_plan();
         empty_plan = false;
         creating_plan = true;
     }
@@ -206,12 +244,18 @@ exports.new_plan = function(req,res) {
     });
 }
 exports.post_new_plan = function(req,res) {
-    console.log("Creating plan for week:",req.body.plan_week);
-    calendarDB.modify_week(req.body.plan_week,current_plan);
-    empty_plan = true;
-    creating_plan = false;
-    redirect_url = "/" + req.user.username + "/calendar";
-    res.redirect(redirect_url);
+    if (!req.body.preset) {
+        console.log("Creating plan for week:",req.body.plan_week);
+        calendarDB.modify_week(req.body.plan_week,current_plan);
+        empty_plan = true;
+        creating_plan = false;
+        redirect_url = "/" + req.user.username + "/calendar";
+        res.redirect(redirect_url);
+    } else {
+        console.log("Adding preset:",req.body.preset);
+        current_plan.set_preset(req.body.preset);
+        res.redirect(req.url);
+    }
 }
 exports.new_exercise = function(req,res) {
     var type = req.params.type;
