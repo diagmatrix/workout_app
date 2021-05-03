@@ -85,7 +85,7 @@ exports.userpage = function(req,res) {
         });
     }).catch((err) => {
         console.log("No plan for week...",err);
-            res.render("profile",{
+            res.render("user/profile",{
                 "title": req.params.profile,
                 "week": week,
                 "name": req.params.profile,
@@ -244,12 +244,18 @@ exports.new_plan = function(req,res) {
     });
 }
 exports.post_new_plan = function(req,res) {
-    console.log("Creating plan for week:",req.body.plan_week);
-    calendarDB.modify_week(req.body.plan_week,current_plan);
-    empty_plan = true;
-    creating_plan = false;
-    redirect_url = "/" + req.user.username + "/calendar";
-    res.redirect(redirect_url);
+    if (!req.body.preset) {
+        console.log("Creating plan for week:",req.body.plan_week);
+        calendarDB.modify_week(req.body.plan_week,current_plan);
+        empty_plan = true;
+        creating_plan = false;
+        redirect_url = "/" + req.user.username + "/calendar";
+        res.redirect(redirect_url);
+    } else {
+        console.log("Adding preset:",req.body.preset);
+        current_plan.set_preset(req.body.preset);
+        res.redirect(req.url);
+    }
 }
 exports.new_exercise = function(req,res) {
     var type = req.params.type;

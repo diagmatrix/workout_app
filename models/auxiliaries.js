@@ -8,9 +8,12 @@ const cardio_list = [
     "Swimming","Racewalking","Walking"
 ];
 const gym_list = [
-    "Squat","Front Squat","Bench Press","Shoulder Press","Pull-up",
-    "Back Row","Deadlift","Romanian Deadlift","Bicep Curl",
-    "Clean","Clean & Jerk","Thruster","Tricep Curl","Hip Thrust"
+    "Squat","Push-Up","Bench Press","Shoulder Press","Pull-up",
+    "Back Row","Deadlift","Cable Crossovers","Bicep Curl",
+    "Lateral Dumbbell Raises","Dumbbell Shrugs","Tricep Curl","Leg Press",
+    "Chest Press", "Incline Press", "Dumbbell Chest Flyes", "Calf Raises",
+    "Front Dumbbell Raises", "Upright Rows", "Leg Extensions",
+    "Row", "Hyperextensions", "Skull-crushers"
 ];
 const sport_list = [
     "Badminton","Padel","Tennis","Voleyball","Basketball",

@@ -25,6 +25,19 @@
     </head>
     <body>
         <h2 style="text-align: center;">Create a new plan for week {{week}}</h2>
+        <form method="post" role="form" style="text-align:center;">
+            <div class="form-group">
+                <select name="preset" id="preset">
+                    <option value="outdoors">outdoors</option>
+                    <option value="chest">chest</option>
+                    <option value="arms">arms</option>
+                    <option value="legs">legs</option>
+                    <option value="shoulders">shoulders</option>
+                    <option value="back">back</option>
+                </select>
+            </div>
+            <button type="submit">Add preset</button>
+        </form>
         {{>training_plan/week_plan}}
         {{#enough}}
         <section>
