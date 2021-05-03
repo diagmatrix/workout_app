@@ -1,5 +1,5 @@
 {
-  "name": "lab7",
+  "name": "workout-application",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,7 @@
     "node.js",
     "express"
   ],
-  "author": "",
+  "author": "Manuel Gachs Ballegeer",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
