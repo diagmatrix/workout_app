@@ -3,7 +3,7 @@ const training_plan = require("../models/training_plan");
 const manager = require("../models/manager");
 const user_calendar = require("../models/user_calendar");
 const achievements = require("../models/achievements");
-const { this_monday, change_week, create_chart } = require("../models/auxiliaries");
+const { this_monday, change_week, create_chart, get_img } = require("../models/auxiliaries");
 
 // ------------------------------------------------------------
 // GLOBAL VARIABLES
@@ -190,6 +190,7 @@ exports.stats = function(req,res) {
             res.render("stats", {
                 "title": req.params.profile + "'s stats",
                 "name": req.params.profile,
+                "desc": get_img(current_exercise),
                 "exercise": current_exercise,
                 "progress": create_chart(exercise[0].progress)
             });
