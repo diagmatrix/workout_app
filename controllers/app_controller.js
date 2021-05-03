@@ -187,10 +187,8 @@ exports.stats = function(req,res) {
     calendarDB.get_calendar().then((list) => {
         history = new achievements(list);
         history.get_progress(current_exercise).then((exercise) =>{
-            progress = create_chart(exercise[0].progress);
-            console.log(progress);
             res.render("stats", {
-                "title": req.params.profile + " stats",
+                "title": req.params.profile + "'s stats",
                 "name": req.params.profile,
                 "exercise": current_exercise,
                 "progress": create_chart(exercise[0].progress)
@@ -202,6 +200,20 @@ exports.change_exercise_stats = function(req,res) {
     current_exercise = req.body.change_exercise;
     redirect_url = "/" + req.params.profile + "/stats";
     res.redirect(redirect_url);
+}
+exports.records = function(req,res) {
+    calendarDB.get_calendar().then((list) => {
+        history = new achievements(list);
+        history.get_records().then((records) => {
+            res.render("records", {
+                "title": req.params.profile + "'s records",
+                "name": req.params.profile,
+                "cardio": records[0],
+                "gym": records[1],
+                "sport": records[2]
+            });
+        })
+    });
 }
 
 // ------------------------------------------------------------

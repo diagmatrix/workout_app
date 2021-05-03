@@ -64,6 +64,37 @@ class achievements {
             });
         });
     }
+    get_records() {
+        return new Promise((resolve,reject) => {
+            this.history.find({},function(err,list) {
+                if (err) {
+                    reject(err);
+                } else {
+                    var cardio = [];
+                    var strength = [];
+                    var sport = [];
+                    list.forEach(x => {
+                        var entry = {name: x._id, record: "-" };
+                        if (x.progress.length>0) {
+                            entry.record = Math.max(...x.progress.map(y => {
+                                return parseInt(y.record);
+                            })).toString();
+                        }
+                        if (x.type=="cardio") {
+                            cardio.push(entry);
+                        } else if (x.type=="strength") {
+                            strength.push(entry);
+                        } else {
+                            sport.push(entry);
+                        }
+                    });
+                    resolve([cardio,strength,sport]);
+                }
+            });
+        });
+        // Transform into records
+
+    }
 }
 
 module.exports = achievements
