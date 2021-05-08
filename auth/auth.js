@@ -3,6 +3,11 @@ const Strategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 const userDB = require("../models/manager");
 
+/*
+ * AUTHORIZATION SETUP FUNCTION
+ * Creates the login strategy
+ * Creates the serialization/deserialization procedures
+ */
 exports.setup = function(app) {
     // Password strategy setup
     passport.use(new Strategy(function(username,password,cb) {
@@ -42,6 +47,10 @@ exports.setup = function(app) {
         });
     });
 }
+/*
+ * AUTHORIZATION FUNCTION
+ * States the procedure of logging in
+ */
 exports.authorize = function(redirect) {
     return passport.authenticate("local", {failureRedirect: redirect});
 }

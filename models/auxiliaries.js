@@ -3,6 +3,8 @@ const add = require('date-fns/add')
 const sub = require('date-fns/sub')
 const eachWeekOfInterval = require('date-fns/eachWeekOfInterval')
 
+// ------------------------------------------------------------
+// EXERCISE NAMES LISTS
 const cardio_list = [
     "Running","Cycling","Hiking","Jogging",
     "Swimming","Racewalking","Walking"
@@ -21,12 +23,15 @@ const sport_list = [
     "Martial arts","Yoga","Football","Rugby",
     "American Football","Handball","Gymnastics","Hockey"
 ];
+
+// ------------------------------------------------------------
+// FUNCTIONS
 // Calculates current week's Monday
 function this_monday() {
     var monday = startOfWeek(new Date(),{weekStartsOn: 1});
     return monday.getFullYear() + "-" + (monday.getMonth()+1) + "-" + monday.getDate();
 }
-// Gets the following week
+// Gets the following week of "current"
 function change_week(current,action) {
     switch(action) {
         case "next":
@@ -49,7 +54,7 @@ function remove_ids(data) {
         type = JSON.stringify(type);
     });
 }
-// Creates a line chart for the progress of an exercise
+// Creates the table of weekly progress of an exercise
 function create_chart(progress) {
     if (progress.length==0)
         return null;
@@ -73,7 +78,7 @@ function create_chart(progress) {
     });
     return labels;
 }
-// Gets the image of an exercise
+// Gets the image to show for exercise "name"
 function get_img(name) {
     switch(name) {
         case "Running":

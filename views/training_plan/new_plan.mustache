@@ -39,13 +39,13 @@
             <button type="submit">Add preset</button>
         </form>
         {{>training_plan/week_plan}}
-        {{#enough}}
+        {{#post}}
         <section>
             <p style="text-align: center;">Generate plan</p>
             <form method="post" role="form" style="text-align:center;">
                 <button name="plan_week" type="submit" value={{week}}>Add plan</button>
             </form>
         </section>
-        {{/enough}}
+        {{/post}}
     </body>
 </html>

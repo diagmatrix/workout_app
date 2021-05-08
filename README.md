@@ -9,10 +9,11 @@ Follow these steps:
 git clone https://github.com/diagmatrix/web_platform_developement_2.git
 ```
 2. Install dependencies
+
 First install the following packages:
  - JavaScript
  - npm
-Then run in the repo folder:
+Then run in the repository folder:
 ```
 npm install
 ```

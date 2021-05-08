@@ -7,14 +7,14 @@ const { this_monday, change_week, create_chart, get_img } = require("../models/a
 
 // ------------------------------------------------------------
 // GLOBAL VARIABLES
-var calendarDB = new user_calendar("Testuser");
-var current_plan = new training_plan();
-var week = this_monday();
-var empty_plan = true;
-var creating_plan = false;
-var history = new achievements();
-var current_exercise = "Walking";
-const forbidden = /[^A-Za-z0-9]/;
+var calendarDB = new user_calendar("Testuser"); // Calendar db variable
+var current_plan = new training_plan(); // Training plan db variable
+var week = this_monday(); // Date variable
+var empty_plan = true; // Empty plan flag
+var creating_plan = false; // Creating plan flag
+var history = new achievements(); // Achievements db variable
+var current_exercise = "Walking"; // Current exercise name variable
+const forbidden = [/[^A-Za-z0-9]/,/calendarDB/,/manager/]; // Forbidden usernames variable
 
 // ------------------------------------------------------------
 // LANDING PAGE
@@ -27,8 +27,6 @@ exports.landing_page = function(req,res) {
 // ------------------------------------------------------------
 // USER FUNCTIONS
 exports.register = function(req,res) {
-    // For testing purposes MUST DELETE LATER
-    // manager.delete_all();
     res.render("user/register");
 }
 exports.post_register = function(req,res) {
@@ -41,7 +39,7 @@ exports.post_register = function(req,res) {
         res.send(401, 'no user or no password'); 
         return;
     }
-    if (forbidden.test(user)) {
+    if (forbidden.map(x => x.test(user)).includes(true)) {
         // Forbid some usernames
         console.log("Error: Username forbidden");
         res.render("user/register", { "user-name-invalid": true});
@@ -54,7 +52,7 @@ exports.post_register = function(req,res) {
             } else {
                 console.log("Creating user");
                 manager.add_user(user,pass);
-                res.redirect("/");
+                res.redirect("/login");
             }
         });
     }
@@ -69,7 +67,10 @@ exports.post_login = function(req,res) {
     res.redirect(redirect_url);
 }
 exports.userpage = function(req,res) {
-    console.log("Profile page of",req.params.profile);
+    console.log("Profile page of",req.user.username);
+    // Refreshing new-plan variables
+    creating_plan = false;
+    empty_plan = true;
     // URL creation depending of the user logged in
     week = this_monday();
     page_url = req.url;
@@ -78,12 +79,12 @@ exports.userpage = function(req,res) {
         current_plan = new training_plan(plan[0].plan[0],plan[0].plan[1],plan[0].plan[2]);
         current_plan.get_list().then((list) => {     
             res.render("user/profile",{
-                "title": req.params.profile,
+                "title": req.user.username,
                 "cardio": list[0],
                 "gym": list[1],
                 "sport": list[2],
                 "week": week,
-                "name": req.params.profile,
+                "name": req.user.username,
                 "exist": true,
                 "enough": (list[0].length+list[1].length+list[2].length)>3,
                 "parent_url": page_url
@@ -94,9 +95,9 @@ exports.userpage = function(req,res) {
     }).catch((err) => {
         console.log("No plan for week...",err);
             res.render("user/profile",{
-                "title": req.params.profile,
+                "title": req.user.username,
                 "week": week,
-                "name": req.params.profile,
+                "name": req.user.username,
                 "exist": false
             });
     });
@@ -109,7 +110,6 @@ exports.logout = function(req, res) {
 
 // ------------------------------------------------------------
 // SHARING PLAN FUNCTIONS
-// TODO
 exports.share_plan = function(req,res) {
     manager.get_plan(week,req.user.username).then((entry) => {
         // Plan has been shared
@@ -145,13 +145,17 @@ exports.show_shared_plan = function(req,res) {
         });
     }).catch((err) => {    
         res.type("text/plain");     
-        res.send("Not found:"+err); 
+        res.send("Plan not found. Are you sure this is the correct link?"); 
     });
 }
 
 // ------------------------------------------------------------
 // CALENDAR FUNCTIONS
 exports.calendar = function(req,res) {
+    // Refreshing new-plan variables
+    creating_plan = false;
+    empty_plan = true;
+
     page_url = req.url;
     calendarDB.get_week(week).then((plan) => {
         current_plan = new training_plan(plan[0].plan[0],plan[0].plan[1],plan[0].plan[2]);
@@ -245,7 +249,8 @@ exports.new_plan = function(req,res) {
             "gym": list[1],
             "sport": list[2],
             "parent_url": page_url,
-            "enough": can_post
+            "enough": true,
+            "post": can_post
         });
         console.log("Promise resolved.",list);
     }).catch((err) => {
@@ -372,4 +377,14 @@ exports.delete_exercise = function(req,res) {
     }
     redirect_url = req.url.replace(/\/delete-.*/,"");
     res.redirect(redirect_url);
+}
+
+// ------------------------------------------------------------
+// OTHER FUNCTIONS
+exports.ensure_username_match = function(req,res,next) {
+    if (req.user.username!=req.params.profile) {
+        res.redirect("/login");
+    } else {
+        next();
+    }
 }

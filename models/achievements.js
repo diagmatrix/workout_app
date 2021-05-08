@@ -1,8 +1,14 @@
 const nedb = require("nedb");
 const { cardio_list,gym_list,sport_list } = require("./auxiliaries");
 
-// Achievements class
+/*
+ * ACHIEVEMENTS CLASS
+ * Handles:
+ *  - Records
+ *  - Stats
+ */
 class achievements {
+    // Constructor
     constructor(calendar) {
         if (!calendar) {
             this.history = new nedb();
@@ -53,6 +59,7 @@ class achievements {
             });
         }
     }
+    // Gets the weekly progress of exercise "name"
     get_progress(name) {
         return new Promise((resolve,reject) => {
             this.history.find({_id: name},function(err,doc) {
@@ -64,6 +71,7 @@ class achievements {
             });
         });
     }
+    // Gets the list of pairs [exercise name,record]
     get_records() {
         return new Promise((resolve,reject) => {
             this.history.find({},function(err,list) {

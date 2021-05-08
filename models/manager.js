@@ -3,10 +3,16 @@ const bcrypt = require("bcrypt");
 const { remove_ids } = require("./auxiliaries")
 const salt_rounds = 10
 
-// Manager class
+/*
+ * MANAGER CLASS
+ * Handles:
+ *  - Users
+ *  - Shared plans
+ * This class should not be instanced.
+ */
 class manager {
-    static #users = new nedb({filename: "./db/users.db",autoload: true});
-    static #plans = new nedb({filename: "./db/shared_plans.db",autoload: true});
+    static #users = new nedb({filename: "./db/users.db",autoload: true}); // Users db
+    static #plans = new nedb({filename: "./db/shared_plans.db",autoload: true}); // Shared plans db
 
     // Create a new user
     static add_user(username,password) {
@@ -27,7 +33,6 @@ class manager {
         });
     }
     // Check if a user exists
-    // DIFFERENT FROM DESIGN
     static check_user(username, cb) {
         console.log("Looking up user");
         this.#users.findOne({username: username},function(err,entry) {
@@ -40,7 +45,7 @@ class manager {
             }
         });
     }
-    // Gets a plan
+    // Gets the shared plan of user "user" for week "week"
     static get_plan(week,user) {
         return new Promise((resolve,reject) => {
             this.#plans.find({username: user, week: week},function(err,entry) {
@@ -52,7 +57,7 @@ class manager {
             })
         });
     }
-    // Returns plan with an id
+    // Gets the shared plan defined by "id"
     static get_plan_id(id) {
         return new Promise((resolve,reject) => {
             this.#plans.find({_id: id},function(err,entry) {
@@ -78,8 +83,7 @@ class manager {
             }
         });
     }
-
-    // Deletes all users (for testing purposes only)
+    // Deletes all users (for testing)
     static delete_all() {
         this.#users.remove({},{},function(err,num) {
             if (!err) {

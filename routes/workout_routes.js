@@ -24,26 +24,26 @@ router.post("/login",auth.authorize("/login"),controller.post_login)
 // Logout
 router.get("/logout",controller.logout)
 // Main user page
-router.get("/:profile",ensureLoggedIn("/login"),controller.userpage)
+router.get("/:profile",ensureLoggedIn("/login"),controller.ensure_username_match,controller.userpage)
 
 // ------------------------------------------------------------
 // CALENDAR PAGE
-router.get("/:profile/calendar",ensureLoggedIn("/login"),controller.calendar)
+router.get("/:profile/calendar",ensureLoggedIn("/login"),controller.ensure_username_match,controller.calendar)
 router.post("/:profile/calendar",ensureLoggedIn("/login"),controller.new_calendar_week)
 
 // ------------------------------------------------------------
 // STATS PAGE
-router.get("/:profile/stats",ensureLoggedIn("/login"),controller.stats)
+router.get("/:profile/stats",ensureLoggedIn("/login"),controller.ensure_username_match,controller.stats)
 router.post("/:profile/stats",ensureLoggedIn("/login"),controller.change_exercise_stats)
 
 // ------------------------------------------------------------
 // RECORDS PAGE
-router.get("/:profile/records",ensureLoggedIn("/login"),controller.records)
+router.get("/:profile/records",ensureLoggedIn("/login"),controller.ensure_username_match,controller.records)
 
 // ------------------------------------------------------------
 // TRAINING PLAN HANDLING
 // New plan
-router.get("/:profile/calendar/:week-new",ensureLoggedIn("/login"),controller.new_plan)
+router.get("/:profile/calendar/:week-new",ensureLoggedIn("/login"),controller.ensure_username_match,controller.new_plan)
 router.post("/:profile/calendar/:week-new",ensureLoggedIn("/login"),controller.post_new_plan)
 // New exercise
 router.get("*/new-:type",ensureLoggedIn("/login"),controller.new_exercise)
@@ -57,7 +57,7 @@ router.post("*/modify-:type-:id",controller.post_modify_exercise)
 router.get("*/delete-:type-:id",controller.delete_exercise)
 
 // ------------------------------------------------------------
-// Other requests
+// OTHER REQUESTS
 router.use(function(req,res) {     
     res.status(404);     
     res.type("text/plain");     

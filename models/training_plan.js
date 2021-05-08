@@ -1,6 +1,9 @@
 const nedb = require('nedb');
 
-// Training plan class
+/*
+ * TRAINING PLAN CLASS
+ * Handles a weekly training plan
+ */
 class training_plan {
     // Constructor
     constructor(cardio,strength,sport) {

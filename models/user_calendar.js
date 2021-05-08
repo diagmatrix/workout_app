@@ -2,7 +2,10 @@ const { json } = require('body-parser');
 const nedb = require('nedb');
 const { remove_ids } = require("./auxiliaries")
 
-// User's calendar class
+/*
+ * CALENDAR CLASS
+ * Handles the calendar of a user.
+ */
 class user_calendar {
     // Constructor
     constructor(username) {
@@ -25,7 +28,7 @@ class user_calendar {
             });
         });
     }
-    // Getting a week
+    // Gets the week "week"
     get_week(date) {
         this.db.persistence.compactDatafile();
         return new Promise((resolve,reject) => {

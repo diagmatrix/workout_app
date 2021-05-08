@@ -34,7 +34,7 @@
             {{/user-name-error}}
             {{#user-name-invalid}}
             <div class="form-group" style="background: #a30000;color:#ffffff;text-align:center;padding:2px;width:90%;margin: top 4px; bottom: 4px;;">
-                You can only use [A-Za-z0-9] for the username
+                Invalid username. ([A-Za-z0-9] only)
             </div>
             {{/user-name-invalid}}
             <div class="form-group">
@@ -46,7 +46,14 @@
                 <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" minlength="8" required>
             </div>
             <div class="form-group" style="margin-top:20px;">
-                <input type="submit" value="Register">
+                <ul class="buttons-container">
+                    <li class="button-box">
+                        <a href="/login" class="button">I already have an account</a>
+                    </li>
+                    <li class="button-box">
+                        <input type="submit" value="Register">
+                    </li>
+                </ul>
             </div> 
         </form> 
     </body> 
